@@ -22,4 +22,11 @@ public interface BidRepository extends JpaRepository<Bid, Long> {
     boolean existsByProjectAndFreelancer(Project project, User freelancer);
 
     long countByProject(Project project);
+
+    long countByFreelancerAndCreatedAtAfter(User freelancer, java.time.LocalDateTime date);
+
+    @org.springframework.data.jpa.repository.Query("SELECT b FROM Bid b WHERE b.freelancer = :freelancer " +
+            "AND (:status IS NULL OR b.status = :status) " +
+            "AND (:search IS NULL OR LOWER(b.project.title) LIKE LOWER(CONCAT('%', :search, '%')) OR LOWER(b.project.client.fullName) LIKE LOWER(CONCAT('%', :search, '%')))")
+    List<Bid> searchBids(User freelancer, BidStatus status, String search);
 }

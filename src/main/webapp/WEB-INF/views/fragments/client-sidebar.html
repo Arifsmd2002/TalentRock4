@@ -19,6 +19,10 @@
                 th:classappend="${currentPage == 'post-project' ? 'active' : ''}">
                 <span class="icon">➕</span> Post Project
             </a>
+            <a th:href="@{/client/profile}" class="sidebar-link"
+                th:classappend="${currentPage == 'profile' ? 'active' : ''}">
+                <span class="icon">👤</span> My Profile
+            </a>
         </div>
 
         <div class="sidebar-section">

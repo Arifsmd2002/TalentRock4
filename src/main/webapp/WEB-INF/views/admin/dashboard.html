@@ -13,36 +13,7 @@
     <div class="app-layout">
 
         <!-- Admin Sidebar -->
-        <div class="sidebar">
-            <a href="/" class="sidebar-brand">
-                <div class="logo-icon">⚡</div>
-                Talentrock
-            </a>
-            <div class="sidebar-section">
-                <div class="sidebar-label">Admin Panel</div>
-                <a href="/admin/dashboard" class="sidebar-link active"><span class="icon">📊</span> Dashboard</a>
-                <a href="/admin/users" class="sidebar-link"><span class="icon">👥</span> Manage Users</a>
-                <a href="/admin/projects" class="sidebar-link"><span class="icon">📋</span> All Projects</a>
-                <a href="/admin/subscriptions" class="sidebar-link"><span class="icon">💳</span> Subscriptions</a>
-                <a href="/admin/messages" class="sidebar-link" style="position:relative;">
-                    <span class="icon">📬</span> Messages
-                    <span th:if="${unreadMessages != null and unreadMessages > 0}" th:text="${unreadMessages}"
-                        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:#ef4444;color:#fff;border-radius:999px;font-size:0.68rem;font-weight:700;padding:0.1rem 0.45rem;min-width:18px;text-align:center;"></span>
-                </a>
-            </div>
-            <div class="sidebar-footer">
-                <div class="flex items-center gap-2" style="margin-bottom:12px;">
-                    <div class="avatar"
-                        th:text="${user.fullName != null ? user.fullName.substring(0,1).toUpperCase() : 'A'}">A</div>
-                    <div>
-                        <div style="font-size:0.9rem; font-weight:600;"
-                            th:text="${user.fullName != null ? user.fullName : user.username}">Admin</div>
-                        <div class="text-muted text-xs" style="color:var(--error);">🛡️ Administrator</div>
-                    </div>
-                </div>
-                <a href="/logout" class="btn btn-ghost btn-sm" style="width:100%; justify-content:center;">Sign Out</a>
-            </div>
-        </div>
+        <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
 
         <main class="main-content">
             <div class="page-header">

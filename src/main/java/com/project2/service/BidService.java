@@ -37,6 +37,10 @@ public class BidService {
         return bidRepository.findByFreelancer(freelancer);
     }
 
+    public List<Bid> searchBids(User freelancer, BidStatus status, String search) {
+        return bidRepository.searchBids(freelancer, status, search);
+    }
+
     public Optional<Bid> findById(Long id) {
         return bidRepository.findById(id);
     }

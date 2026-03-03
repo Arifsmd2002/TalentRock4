@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{info/base :: head}"></head>
+
+<body>
+    <nav th:replace="~{info/base :: nav}"></nav>
+    <div class="info-container">
+        <div class="info-header">
+            <span class="section-tag">The Process</span>
+            <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;">How <span
+                    class="gradient-text">Talentrock</span> Works</h1>
+            <p style="font-size:1.1rem; color:var(--text-secondary); max-width:700px; margin:0 auto;">
+                A transparent end-to-end workflow designed for merit and trust.
+            </p>
+        </div>
+
+        <div class="info-content">
+            <h2>1. For Clients: Post and Discover</h2>
+            <p>Posting a project on Talentrock is free and takes less than 2 minutes. Define your requirements, set a
+                realistic budget, and specify the skills you're looking for.</p>
+            <ul>
+                <li>Set clear milestones from the start.</li>
+                <li>Receive demo-based bids from top freelancers.</li>
+                <li>Review actual work samples matched to your project needs.</li>
+            </ul>
+
+            <div class="gradient-box">
+                <strong>Tip for Clients:</strong> Always request a small "Proof of Concept" demo in your project
+                description to see real skill before hiring.
+            </div>
+
+            <h2>2. For Freelancers: Bid with Proof</h2>
+            <p>Stop competing on price. On Talentrock, your skills speak louder than your quotes. Submit a demo of how
+                you'd approach the project to stand out.</p>
+            <ul>
+                <li>Browse projects that match your verified skill set.</li>
+                <li>Submit a bid with a personalized demo or portfolio sample.</li>
+                <li>Communicate directly with clients through our secure portal.</li>
+            </ul>
+
+            <h2>3. Secure Collaboration</h2>
+            <p>Once a freelancer is hired, funds for the first milestone are secured in our platform escrow. Both
+                parties track progress through a real-time dashboard.</p>
+
+            <h2>4. Success and Payment</h2>
+            <p>When a milestone is completed and approved, payment is released instantly. Talentrock charges only 5%
+                commission — the lowest in the industry.</p>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

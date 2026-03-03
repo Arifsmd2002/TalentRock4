@@ -35,11 +35,18 @@ public class NotificationService {
     // ----------------------------------------------------------------
     @Transactional
     public void notifyAdminsContactMessage(String senderName, String senderEmail, Long msgId) {
-        List<User> admins = userRepository.findByRole(Role.ADMIN);
-        for (User admin : admins) {
+        // Try to identify if sender is an existing user to show their role
+        String senderInfo = senderName;
+        com.project2.model.User sender = userRepository.findByEmail(senderEmail).orElse(null);
+        if (sender != null) {
+            senderInfo = "[" + sender.getRole() + "] " + senderName;
+        }
+
+        List<com.project2.model.User> admins = userRepository.findByRole(com.project2.model.Role.ADMIN);
+        for (com.project2.model.User admin : admins) {
             send(admin,
-                    "📬 New Contact Message",
-                    "From " + senderName + " (" + senderEmail + ")",
+                    "📬 New Support Request",
+                    "New message from " + senderInfo + " (" + senderEmail + ")",
                     "CONTACT_MESSAGE",
                     "/admin/messages");
         }

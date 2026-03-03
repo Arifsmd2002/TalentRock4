@@ -81,6 +81,16 @@
             box-shadow: 0 10px 20px rgba(99, 102, 241, 0.2);
         }
 
+        .freelancer-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            margin: 0 auto 1.5rem;
+            display: block;
+            object-fit: cover;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
         .verify-badge {
             position: absolute;
             top: 1.5rem;
@@ -216,7 +226,9 @@
         <!-- Loop through freelancers -->
         <div th:each="f : ${freelancers}" class="freelancer-card">
             <div th:if="${f.isVerified}" class="verify-badge">✓ Verified</div>
-            <div class="freelancer-avatar" th:text="${f.fullName.substring(0,1)}">A</div>
+            <img th:if="${f.profilePicture != null}" th:src="${f.profilePicture}" class="freelancer-img">
+            <div th:unless="${f.profilePicture != null}" class="freelancer-avatar"
+                th:text="${f.fullName.substring(0,1)}">A</div>
             <h3 class="freelancer-name" th:text="${f.fullName}">Full Name</h3>
             <p class="freelancer-tagline" th:text="${f.category != null ? f.category : f.skills}">Category</p>
             <div class="freelancer-rate">

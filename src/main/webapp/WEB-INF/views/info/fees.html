@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{info/base :: head}"></head>
+
+<body>
+    <nav th:replace="~{info/base :: nav}"></nav>
+    <div class="info-container">
+        <div class="info-header">
+            <span class="section-tag">Transparency</span>
+            <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;" th:text="${title}">Fees and Charges</h1>
+            <p style="font-size:1.1rem; color:var(--text-secondary); max-width:700px; margin:0 auto;">
+                Simple, transparent pricing. No hidden costs.
+            </p>
+        </div>
+
+        <div class="info-content">
+            <h2>Our 5% Model</h2>
+            <p>Unlike other platforms that charge 20% or more, Talentrock believes in a sustainable 5% commission. This
+                allows freelancers to keep more of their earnings while we maintain a high-quality platform.</p>
+
+            <div class="gradient-box text-center">
+                <h3 style="margin-top:0;">Platform Commission</h3>
+                <div style="font-size:3rem; font-weight:900; color:var(--text-primary);">5%</div>
+                <p>Flat fee on all milestone payments.</p>
+            </div>
+
+            <h2>Client Fees</h2>
+            <ul>
+                <li><strong>Project Posting:</strong> Always FREE.</li>
+                <li><strong>Payment Processing:</strong> Standard credit card/bank fees apply (approx 2.9% + $0.30).
+                </li>
+                <li><strong>Enterprise Features:</strong> Custom pricing for high-volume clients.</li>
+            </ul>
+
+            <h2>Freelancer Fees</h2>
+            <ul>
+                <li><strong>Account Creation:</strong> FREE.</li>
+                <li><strong>Bidding:</strong> FREE (No "connects" system).</li>
+                <li><strong>Withdrawal:</strong> $1.00 flat fee per withdrawal to bank/wallet to cover transaction
+                    costs.</li>
+            </ul>
+
+            <h2>No Hidden Fees</h2>
+            <p>We do not charge for messaging, profile visibility, or "featured" bids. Merit is the only thing that gets
+                you noticed on Talentrock.</p>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

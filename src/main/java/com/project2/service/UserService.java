@@ -16,12 +16,14 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final WalletTransactionRepository walletTransactionRepository;
+    private final WithdrawalRepository withdrawalRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository, WalletTransactionRepository walletTransactionRepository,
-            PasswordEncoder passwordEncoder) {
+            WithdrawalRepository withdrawalRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.walletTransactionRepository = walletTransactionRepository;
+        this.withdrawalRepository = withdrawalRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -97,7 +99,51 @@ public class UserService {
         return userRepository.findByRoleAndIsActiveAndCategoryContainingIgnoreCase(Role.FREELANCER, true, category);
     }
 
+    @Transactional
+    public void requestWithdrawal(User user, BigDecimal amount, String accName, String accNum, String ifsc,
+            String bank) {
+        if (user.getWalletBalance().compareTo(amount) < 0) {
+            throw new RuntimeException("Insufficient wallet balance for withdrawal");
+        }
+
+        // Deduct balance immediately
+        deductFromWallet(user, amount, "Withdrawal request to " + bank + " (" + accNum + ")");
+
+        // Save withdrawal request
+        Withdrawal withdrawal = new Withdrawal();
+        withdrawal.setUser(user);
+        withdrawal.setAmount(amount);
+        withdrawal.setAccountName(accName);
+        withdrawal.setAccountNumber(accNum);
+        withdrawal.setIfscCode(ifsc);
+        withdrawal.setBankName(bank);
+        withdrawal.setStatus("PENDING");
+        withdrawalRepository.save(withdrawal);
+    }
+
+    public List<Withdrawal> findWithdrawalsByUser(User user) {
+        return withdrawalRepository.findByUserOrderByCreatedAtDesc(user);
+    }
+
     public long countByRole(Role role) {
         return userRepository.findByRole(role).size();
+    }
+
+    public BigDecimal getTotalEarnings(User user) {
+        return walletTransactionRepository.findByUserOrderByCreatedAtDesc(user).stream()
+                .filter(tx -> "CREDIT".equals(tx.getType()))
+                .map(WalletTransaction::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public BigDecimal getTotalWithdrawals(User user) {
+        return withdrawalRepository.findByUserOrderByCreatedAtDesc(user).stream()
+                .filter(w -> "APPROVED".equals(w.getStatus()))
+                .map(Withdrawal::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public List<WalletTransaction> getWalletTransactions(User user) {
+        return walletTransactionRepository.findByUserOrderByCreatedAtDesc(user);
     }
 }

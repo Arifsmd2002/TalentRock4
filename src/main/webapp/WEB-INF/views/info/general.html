@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{info/base :: head}"></head>
+
+<body>
+    <nav th:replace="~{info/base :: nav}"></nav>
+    <div class="info-container">
+        <div class="info-header">
+            <span class="section-tag">Talentrock Information</span>
+            <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;" th:text="${title}">Information</h1>
+        </div>
+
+        <div class="info-content">
+            <div th:if="${title == 'Investor Relations'}">
+                <h2>Growing the Future of Work</h2>
+                <p>Talentrock is rapidly expanding its footprint in the global freelancing market. With a
+                    month-over-month growth of 25% in active projects, we are on track to become a leading platform for
+                    merit-based hiring.</p>
+                <div class="gradient-box">
+                    <strong>Vision 2030:</strong> To empower 10 million freelancers with fair wages and transparent
+                    working conditions.
+                </div>
+            </div>
+
+            <div th:if="${title == 'Success Stories'}">
+                <h2>Real Results for Real People</h2>
+                <p>From developers in Bangalore to designers in Berlin, Talentrock is helping professional talent find
+                    high-quality clients without the "race to the bottom" on price.</p>
+                <blockquote>"Talentrock changed my career. I stopped being a commodity and started being a partner." -
+                    Sarah J., UI Designer</blockquote>
+            </div>
+
+            <div th:if="${title == 'Talentrock News'}">
+                <h2>Latest Updates</h2>
+                <ul>
+                    <li><strong>March 2026:</strong> Launched AI-powered demo matching.</li>
+                    <li><strong>Feb 2026:</strong> Hit 100,000 verified freelancers milestone.</li>
+                    <li><strong>Jan 2026:</strong> Global expansion into 5 new sectors.</li>
+                </ul>
+            </div>
+
+            <div th:if="${title == 'Our Team'}">
+                <h2>Meet the Creators</h2>
+                <p>We are a global team of engineers, designers, and former freelancers who believe that the current gig
+                    economy is broken and needs a merit-based fix.</p>
+            </div>
+
+            <div th:if="${title == 'Awards and Recognition'}">
+                <h2>Industry Honors</h2>
+                <p>Talentrock has been recognized as a 'Top Disruptor' in the SaaS space and high-rated platform for
+                    freelancer satisfaction in 2025.</p>
+            </div>
+
+            <div th:if="${title == 'Careers at Talentrock'}">
+                <h2>Join Our Mission</h2>
+                <p>We're always looking for passionate people to help us build the next generation of freelancing
+                    infrastructure. Check back soon for open roles in engineering and support.</p>
+            </div>
+
+            <div th:if="${title == 'Copyright Policy'}">
+                <h2>Intellectual Property</h2>
+                <p>Freelancers retain ownership of their demo work until the client pays for the milestone. Upon
+                    payment, the IP transfer follows the agreement specified in the project contract.</p>
+            </div>
+
+            <div th:if="${title == 'Code of Conduct'}">
+                <h2>Community Standards</h2>
+                <p>Respect, transparency, and professionalism are our core pillars. Harassment, fraud, and circumventing
+                    the platform are strictly prohibited.</p>
+            </div>
+
+            <p class="mt-4" style="font-style: italic;">Contact us at support@talentrock.com for more detailed
+                information regarding this section.</p>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

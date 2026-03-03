@@ -2,7 +2,6 @@ package com.project2.controller;
 
 import com.project2.model.*;
 import com.project2.service.*;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -128,15 +127,72 @@ public class ClientController {
     public String wallet(Authentication auth, Model model) {
         User user = getCurrentUser(auth);
         model.addAttribute("user", user);
+        model.addAttribute("withdrawals", userService.findWithdrawalsByUser(user));
         return "client/wallet";
     }
 
+    @PostMapping("/wallet/withdraw")
+    public String withdraw(@RequestParam BigDecimal amount,
+            @RequestParam String accountName,
+            @RequestParam String accountNumber,
+            @RequestParam String ifscCode,
+            @RequestParam String bankName,
+            Authentication auth,
+            RedirectAttributes redirectAttrs) {
+        try {
+            User user = getCurrentUser(auth);
+            userService.requestWithdrawal(user, amount, accountName, accountNumber, ifscCode, bankName);
+            redirectAttrs.addFlashAttribute("success", "Withdrawal request of ₹" + amount + " submitted successfully!");
+        } catch (Exception e) {
+            redirectAttrs.addFlashAttribute("error", e.getMessage());
+        }
+        return "redirect:/client/wallet";
+    }
+
     @PostMapping("/wallet/add")
-    public String addWallet(@RequestParam BigDecimal amount, Authentication auth,
+    public String addWallet(@RequestParam BigDecimal amount, RedirectAttributes redirectAttrs) {
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            redirectAttrs.addFlashAttribute("error", "Please enter a valid amount.");
+            return "redirect:/client/wallet";
+        }
+        return "redirect:/client/wallet/checkout?amount=" + amount;
+    }
+
+    @GetMapping("/wallet/checkout")
+    public String checkout(@RequestParam BigDecimal amount, Authentication auth, Model model) {
+        model.addAttribute("user", getCurrentUser(auth));
+        model.addAttribute("amount", amount);
+        return "client/checkout";
+    }
+
+    @PostMapping("/wallet/pay")
+    public String processPayment(@RequestParam BigDecimal amount, @RequestParam String method,
+            Authentication auth, RedirectAttributes redirectAttrs) {
+        User user = getCurrentUser(auth);
+
+        // Simulating actual payment processing delay/logic
+        userService.addToWallet(user, amount, "Deposit via " + method);
+
+        redirectAttrs.addFlashAttribute("success", "✅ Payment of ₹" + amount + " successful via " + method + "!");
+        return "redirect:/client/wallet";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Authentication auth, Model model) {
+        model.addAttribute("user", getCurrentUser(auth));
+        return "client/profile";
+    }
+
+    @PostMapping("/profile/update")
+    public String updateProfile(@ModelAttribute User updatedUser, Authentication auth,
             RedirectAttributes redirectAttrs) {
         User user = getCurrentUser(auth);
-        userService.addToWallet(user, amount, "Wallet top-up");
-        redirectAttrs.addFlashAttribute("success", "₹" + amount + " added to wallet!");
-        return "redirect:/client/wallet";
+        user.setFullName(updatedUser.getFullName());
+        user.setBio(updatedUser.getBio());
+        user.setLocation(updatedUser.getLocation());
+        user.setPhone(updatedUser.getPhone());
+        userService.save(user);
+        redirectAttrs.addFlashAttribute("success", "Profile updated!");
+        return "redirect:/client/profile";
     }
 }

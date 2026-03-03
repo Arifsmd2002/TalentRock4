@@ -33,7 +33,7 @@ public class SecurityConfig {
                                                 .requestMatchers("/", "/register", "/login", "/css/**", "/js/**",
                                                                 "/images/**",
                                                                 "/about", "/contact", "/contact/send", "/pricing",
-                                                                "/hire/**", "/profile/**")
+                                                                "/hire/**", "/profile/**", "/chat/ai-reply")
                                                 .permitAll()
                                                 .requestMatchers("/admin/**").hasRole("ADMIN")
                                                 .requestMatchers("/client/**").hasRole("CLIENT")

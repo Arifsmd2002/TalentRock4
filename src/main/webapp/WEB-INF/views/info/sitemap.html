@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{info/base :: head}"></head>
+
+<body>
+    <nav th:replace="~{info/base :: nav}"></nav>
+    <div class="info-container">
+        <div class="info-header">
+            <span class="section-tag">Navigation</span>
+            <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;" th:text="${title}">Sitemap</h1>
+        </div>
+
+        <div class="info-content">
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 2rem;">
+                <div>
+                    <h3>Main</h3>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/login">Login</a></li>
+                        <li><a href="/register">Register</a></li>
+                        <li><a href="/pricing">Pricing</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>About</h3>
+                    <ul>
+                        <li><a href="/about">About Us</a></li>
+                        <li><a href="/how-it-works">How It Works</a></li>
+                        <li><a href="/security">Security</a></li>
+                        <li><a href="/investors">Investors</a></li>
+                        <li><a href="/team">Team</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>Terms</h3>
+                    <ul>
+                        <li><a href="/privacy-policy">Privacy Policy</a></li>
+                        <li><a href="/terms-and-conditions">Terms of Service</a></li>
+                        <li><a href="/fees-and-charges">Fees & Charges</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

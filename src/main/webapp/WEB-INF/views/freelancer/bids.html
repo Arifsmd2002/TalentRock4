@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bid History | Talentrock</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+</head>
+
+<body>
+    <div class="app-layout">
+        <div th:replace="~{fragments/freelancer-sidebar :: freelancer-sidebar}"></div>
+
+        <main class="main-content">
+            <div class="page-header flex-between">
+                <div>
+                    <a href="/freelancer/dashboard" class="text-muted text-sm"
+                        style="display:inline-flex;align-items:center;gap:4px;margin-bottom:8px;">← Back to
+                        Dashboard</a>
+                    <h1 class="page-title">🎯 Bid History</h1>
+                    <p class="page-subtitle">Track and manage all your project proposals</p>
+                </div>
+                <div class="flex gap-2">
+                    <form action="/freelancer/bids" method="get" class="flex gap-2">
+                        <div class="search-box" style="width: 280px;">
+                            <input type="text" name="search" th:value="${search}"
+                                placeholder="Search project or client..." />
+                        </div>
+                        <select name="status" class="form-control" style="width: 150px;" onchange="this.form.submit()">
+                            <option value="ALL" th:selected="${status == 'ALL'}">All Status</option>
+                            <option value="PENDING" th:selected="${status == 'PENDING'}">Pending</option>
+                            <option value="ACCEPTED" th:selected="${status == 'ACCEPTED'}">Accepted</option>
+                            <option value="REJECTED" th:selected="${status == 'REJECTED'}">Rejected</option>
+                            <option value="WITHDRAWN" th:selected="${status == 'WITHDRAWN'}">Withdrawn</option>
+                        </select>
+                        <button type="submit" class="btn btn-ghost">🔍</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4 animate-fade-in">
+                <div th:if="${bids == null or bids.isEmpty()}"
+                    style="padding:5rem3rem; text-align:center; color:var(--text-muted);">
+                    <div style="font-size:4rem; margin-bottom:1.5rem; opacity: 0.3;">📂</div>
+                    <h3 style="color: white; margin-bottom: 0.5rem;">No bids found</h3>
+                    <p>Try adjusting your filters or browse more projects.</p>
+                    <a href="/freelancer/browse" class="btn btn-primary mt-3">Browse Projects</a>
+                </div>
+
+                <div th:if="${bids != null and !bids.isEmpty()}" class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Project & Client</th>
+                                <th>Bid Amount</th>
+                                <th>Delivery</th>
+                                <th>Status</th>
+                                <th>Submitted Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="bid : ${bids}" class="animate-row">
+                                <td>
+                                    <div style="font-weight:700; color: white;" th:text="${bid.project.title}">Project
+                                    </div>
+                                    <div class="flex items-center gap-1 text-xs mt-1">
+                                        <span class="text-muted">by</span>
+                                        <span style="color: var(--secondary);"
+                                            th:text="${bid.project.client.fullName}">Client</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div style="font-weight:800; color: var(--secondary); font-size: 1.1rem;">₹<span
+                                            th:text="${#numbers.formatDecimal(bid.bidAmount, 1, 0)}">0</span></div>
+                                </td>
+                                <td class="text-secondary-color">
+                                    <span th:text="${bid.deliveryDays}">-</span> days
+                                </td>
+                                <td>
+                                    <span th:switch="${bid.status.name()}">
+                                        <span th:case="'PENDING'" class="project-badge badge-pending">⏳ Pending</span>
+                                        <span th:case="'ACCEPTED'" class="project-badge badge-accepted">✅
+                                            Accepted</span>
+                                        <span th:case="'REJECTED'" class="project-badge badge-cancelled">❌
+                                            Rejected</span>
+                                        <span th:case="'WITHDRAWN'" class="project-badge badge-pending"
+                                            style="opacity: 0.6;">↩️ Withdrawn</span>
+                                    </span>
+                                </td>
+                                <td class="text-muted text-sm">
+                                    <div th:text="${#temporals.format(bid.createdAt, 'dd MMM yyyy')}">Date</div>
+                                    <div class="text-xs opacity-50"
+                                        th:text="${#temporals.format(bid.createdAt, 'hh:mm a')}">Time</div>
+                                </td>
+                                <td>
+                                    <a th:href="@{/freelancer/project/{id}(id=${bid.project.id})}"
+                                        class="btn btn-ghost btn-sm">View Details</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

@@ -61,14 +61,6 @@
                                 <div style="font-weight:600; font-size:0.9rem;">Freelancer</div>
                                 <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Find work</div>
                             </label>
-                            <label id="role-admin-label"
-                                style="flex:1; cursor:pointer; border:1.5px solid var(--bg-border); border-radius:10px; padding:12px; transition:all 0.2s; text-align:center;"
-                                onclick="selectRole('ADMIN')">
-                                <input type="radio" name="role" value="ADMIN" style="display:none;" id="role-admin" />
-                                <div style="font-size:1.5rem; margin-bottom:4px;">🛡️</div>
-                                <div style="font-weight:600; font-size:0.9rem;">Admin</div>
-                                <div style="font-size:0.75rem; color:var(--text-muted); margin-top:2px;">Manage</div>
-                            </label>
                         </div>
                     </div>
 
@@ -82,21 +74,28 @@
                             <input type="text" name="username" class="form-control" placeholder="johndoe" required />
                         </div>
                     </div>
+
+                    <div class="grid grid-2 mt-3" style="gap:1rem;">
+                        <div class="form-group mb-0">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" name="phone" class="form-control" placeholder="+91 9876543210" required />
+                        </div>
+                        <div class="form-group mb-0">
+                            <label class="form-label">Location</label>
+                            <input type="text" name="location" class="form-control" placeholder="Delhi, India"
+                                required />
+                        </div>
+                    </div>
+
                     <div class="form-group mt-3">
                         <label class="form-label">Email Address</label>
                         <input type="email" name="email" class="form-control" placeholder="john@example.com" required />
                     </div>
-                    <div class="grid grid-2 mt-3" style="gap:1rem;">
-                        <div class="form-group mb-0">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control" placeholder="Min 8 characters"
-                                required />
-                        </div>
-                        <div class="form-group mb-0">
-                            <label class="form-label">Confirm Password</label>
-                            <input type="password" name="confirmPassword" class="form-control"
-                                placeholder="Repeat password" required />
-                        </div>
+
+                    <div class="form-group mt-3">
+                        <label class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" placeholder="Min 8 characters"
+                            required />
                     </div>
 
                     <button type="submit" class="btn btn-primary mt-4" style="width:100%;">Create Account 🚀</button>
@@ -112,7 +111,7 @@
 
     <script>
         function selectRole(role) {
-            ['CLIENT', 'FREELANCER', 'ADMIN'].forEach(r => {
+            ['CLIENT', 'FREELANCER'].forEach(r => {
                 const label = document.getElementById('role-' + r.toLowerCase() + '-label');
                 if (r === role) {
                     label.style.borderColor = 'var(--primary)';
@@ -128,6 +127,7 @@
         const params = new URLSearchParams(window.location.search);
         const roleParam = params.get('role');
         if (roleParam) selectRole(roleParam.toUpperCase());
+        else selectRole('CLIENT'); // Default
     </script>
 </body>
 

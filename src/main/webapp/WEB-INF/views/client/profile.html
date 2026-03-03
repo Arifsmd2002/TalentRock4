@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Profile | Talentrock</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+
+<body>
+    <div class="app-layout">
+        <div th:replace="~{fragments/client-sidebar :: client-sidebar}"></div>
+
+        <main class="main-content">
+            <div class="page-header">
+                <h1 class="page-title">My Profile 👤</h1>
+                <p class="page-subtitle">Manage your account and billing information</p>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
+
+            <div class="grid" style="grid-template-columns:1fr 2fr; gap:1.5rem;">
+                <!-- Profile Card -->
+                <div class="card" style="height:fit-content;">
+                    <div class="card-body text-center">
+                        <div class="avatar avatar-xl" style="margin:0 auto 1rem;"
+                            th:text="${user.fullName != null ? user.fullName.substring(0,1).toUpperCase() : 'C'}">C
+                        </div>
+                        <h2 style="font-size:1.3rem; margin-bottom:0.25rem;"
+                            th:text="${user.fullName != null ? user.fullName : user.username}">Full Name</h2>
+                        <p class="text-muted text-sm mb-3" th:text="${user.email}">email@example.com</p>
+                        <div class="flex-center gap-2 mb-3">
+                            <span
+                                style="background:rgba(0,212,170,0.12); color:#00D4AA; padding:4px 14px; border-radius:100px; font-size:0.8rem; font-weight:600;">Client</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="flex-between mb-2">
+                            <span class="text-muted text-sm">Wallet Balance</span>
+                            <span class="font-bold" style="color:var(--primary);">₹<span
+                                    th:text="${#numbers.formatDecimal(user.walletBalance, 1, 2)}">0.00</span></span>
+                        </div>
+
+                        <!-- WITHDRAW SECTION FOR CLIENT PROFILE -->
+                        <div style="margin-top: 1.5rem;">
+                            <button onclick="toggleWithdrawForm()" class="btn btn-secondary btn-sm w-100"
+                                style="justify-content: center; gap: 8px;">
+                                💸 Withdraw Funds
+                            </button>
+                        </div>
+
+                        <div id="quick-withdraw-form"
+                            style="display: none; margin-top: 1.5rem; text-align: left; background: rgba(0,0,0,0.2); padding: 1rem; border-radius: 12px;">
+                            <h4 style="font-size: 0.9rem; margin-bottom: 1rem;">Bank Details</h4>
+                            <form th:action="@{/client/wallet/withdraw}" method="post">
+                                <input type="number" name="amount" th:max="${user.walletBalance}"
+                                    class="form-control mb-2" placeholder="Amount" required
+                                    style="font-size: 0.8rem; height: auto; padding: 6px 10px;" />
+                                <input type="text" name="accountName" class="form-control mb-2"
+                                    placeholder="Holder Name" required
+                                    style="font-size: 0.8rem; height: auto; padding: 6px 10px;" />
+                                <input type="text" name="accountNumber" class="form-control mb-2"
+                                    placeholder="Account No" required
+                                    style="font-size: 0.8rem; height: auto; padding: 6px 10px;" />
+                                <input type="text" name="ifscCode" class="form-control mb-2" placeholder="IFSC Code"
+                                    required style="font-size: 0.8rem; height: auto; padding: 6px 10px;" />
+                                <input type="text" name="bankName" class="form-control mb-3" placeholder="Bank Name"
+                                    required style="font-size: 0.8rem; height: auto; padding: 6px 10px;" />
+                                <button type="submit" class="btn btn-primary btn-xs w-100">Submit Request</button>
+                            </form>
+                        </div>
+
+                        <script>
+                            function toggleWithdrawForm() {
+                                const f = document.getElementById('quick-withdraw-form');
+                                f.style.display = f.style.display === 'none' ? 'block' : 'none';
+                            }
+                        </script>
+
+                        <div class="divider" style="margin-top: 1.5rem;"></div>
+                        <div th:if="${user.location}" class="text-secondary-color text-sm mb-1">📍 <span
+                                th:text="${user.location}">Location</span></div>
+                        <div th:if="${user.phone}" class="text-secondary-color text-sm">📞 <span
+                                th:text="${user.phone}">Phone</span></div>
+                    </div>
+                </div>
+
+                <!-- Edit Form -->
+                <div class="card">
+                    <div class="card-header">✏️ Edit Profile</div>
+                    <div class="card-body">
+                        <form th:action="@{/client/profile/update}" method="post">
+                            <div class="grid grid-2" style="gap:1rem;">
+                                <div class="form-group mb-0">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" name="fullName" class="form-control" th:value="${user.fullName}"
+                                        placeholder="Your full name" />
+                                </div>
+                                <div class="form-group mb-0">
+                                    <label class="form-label">Phone</label>
+                                    <input type="text" name="phone" class="form-control" th:value="${user.phone}"
+                                        placeholder="+91 9876543210" />
+                                </div>
+                            </div>
+                            <div class="form-group mt-3">
+                                <label class="form-label">Location</label>
+                                <input type="text" name="location" class="form-control" th:value="${user.location}"
+                                    placeholder="e.g. Mumbai, India" />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Company / About You</label>
+                                <textarea name="bio" class="form-control" rows="5" th:text="${user.bio}"
+                                    placeholder="Briefly describe your company or yourself as a client..."></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes ✓</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

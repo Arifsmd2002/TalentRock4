@@ -10,20 +10,8 @@
 
 <body>
     <div class="app-layout">
-        <div class="sidebar">
-            <a href="/" class="sidebar-brand">
-                <div class="logo-icon">⚡</div>Talentrock
-            </a>
-            <div class="sidebar-section">
-                <div class="sidebar-label">Admin Panel</div>
-                <a href="/admin/dashboard" class="sidebar-link"><span class="icon">📊</span> Dashboard</a>
-                <a href="/admin/users" class="sidebar-link active"><span class="icon">👥</span> Manage Users</a>
-                <a href="/admin/projects" class="sidebar-link"><span class="icon">📋</span> All Projects</a>
-            </div>
-            <div class="sidebar-footer">
-                <a href="/logout" class="btn btn-ghost btn-sm" style="width:100%;justify-content:center;">Sign Out</a>
-            </div>
-        </div>
+        <!-- Admin Sidebar -->
+        <div th:replace="~{fragments/admin-sidebar :: admin-sidebar}"></div>
 
         <main class="main-content">
             <div class="page-header">

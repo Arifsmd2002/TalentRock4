@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Secure Checkout | Talentrock</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        .checkout-container {
+            max-width: 800px;
+            margin: 4rem auto;
+            padding: 0 1.5rem;
+        }
+
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .payment-option {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .payment-option:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--primary);
+        }
+
+        .payment-option.active {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+            box-shadow: 0 0 20px rgba(108, 99, 255, 0.1);
+        }
+
+        .payment-icon {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .summary-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .processing-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 11, 15, 0.95);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            text-align: center;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid rgba(108, 99, 255, 0.1);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 2rem;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .upi-apps {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .upi-app {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.75rem;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 0.75rem;
+            border: 1px solid transparent;
+        }
+
+        .upi-app:hover {
+            border-color: var(--primary);
+        }
+
+        .card-details {
+            margin-top: 1rem;
+            display: none;
+        }
+    </style>
+</head>
+
+<body class="bg-dark text-white">
+    <div class="checkout-container">
+        <header style="margin-bottom: 3rem; text-align: center;">
+            <a href="/" style="text-decoration: none; color: inherit; display: inline-block; margin-bottom: 1rem;">
+                <h2 style="font-weight: 900; letter-spacing: -1px;">TALENT<span>ROCK</span></h2>
+            </a>
+            <h1 style="font-size: 2.5rem; font-weight: 800;">Secure Payment</h1>
+            <p style="color: var(--text-secondary);">Choose your preferred payment method</p>
+        </header>
+
+        <div class="checkout-grid">
+            <div class="payment-methods">
+                <div class="payment-option active" onclick="selectMethod('UPI', this)">
+                    <div class="payment-icon">📱</div>
+                    <div style="flex:1">
+                        <div style="font-weight: 700;">UPI</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">Google Pay, PhonePe, Paytm & more
+                        </div>
+                    </div>
+                    <div class="radio-check"></div>
+                </div>
+
+                <div id="upi-details" class="upi-apps" style="display: grid;">
+                    <div class="upi-app" onclick="selectUpiApp('Google Pay')">Google Pay</div>
+                    <div class="upi-app" onclick="selectUpiApp('PhonePe')">PhonePe</div>
+                    <div class="upi-app" onclick="selectUpiApp('Paytm')">Paytm</div>
+                    <div class="upi-app" onclick="selectUpiApp('Any UPI ID')">Any UPI ID</div>
+                </div>
+
+                <div id="upi-id-box"
+                    style="display: none; margin-top: 1.5rem; padding: 1.5rem; background: rgba(108, 99, 255, 0.05); border: 1px dashed var(--primary); border-radius: 12px;"
+                    class="animate-fade-in">
+                    <label class="form-label" id="upi-label">Enter your UPI ID</label>
+                    <div style="position: relative;">
+                        <input type="text" id="upi-id-input" class="form-control" placeholder="username@bank"
+                            style="padding-right: 80px;">
+                        <span
+                            style="position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-weight: 700; color: var(--primary); font-size: 0.8rem;">VERIFIED</span>
+                    </div>
+                    <p style="font-size: 0.75rem; color: var(--text-secondary); margin-top: 0.75rem;">A payment request
+                        will be sent to this ID.</p>
+                </div>
+
+                <div class="payment-option" onclick="selectMethod('Card', this)">
+                    <div class="payment-icon">💳</div>
+                    <div style="flex:1">
+                        <div style="font-weight: 700;">Debit / Credit Card</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">Visa, Mastercard, RuPay & more
+                        </div>
+                    </div>
+                </div>
+
+                <div id="card-details" class="card-details">
+                    <div class="form-group mb-3">
+                        <input type="text" class="form-control" placeholder="Card Number" maxlength="19">
+                    </div>
+                    <div class="flex gap-2">
+                        <input type="text" class="form-control" placeholder="Expiry (MM/YY)" style="flex:1">
+                        <input type="password" class="form-control" placeholder="CVV" style="width: 80px" maxlength="3">
+                    </div>
+                </div>
+
+                <div class="payment-option" onclick="selectMethod('NetBanking', this)">
+                    <div class="payment-icon">🏧</div>
+                    <div style="flex:1">
+                        <div style="font-weight: 700;">Net Banking</div>
+                        <div style="font-size: 0.85rem; color: var(--text-secondary);">All Indian Banks available</div>
+                    </div>
+                </div>
+            </div>
+
+            <aside>
+                <div class="summary-card">
+                    <h3
+                        style="margin-bottom: 2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 1rem;">
+                        Order Summary</h3>
+                    <div class="flex justify-between mb-2">
+                        <span style="color: var(--text-secondary);">Adding Funds</span>
+                        <span th:text="'₹' + ${amount}">₹0.00</span>
+                    </div>
+                    <div class="flex justify-between mb-4">
+                        <span style="color: var(--text-secondary);">GST (0%)</span>
+                        <span>₹0.00</span>
+                    </div>
+                    <div class="flex justify-between"
+                        style="font-size: 1.5rem; font-weight: 800; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid rgba(255,255,255,0.1);">
+                        <span>Total</span>
+                        <span class="gradient-text" th:text="'₹' + ${amount}">₹0.00</span>
+                    </div>
+
+                    <form id="payment-form" th:action="@{/client/wallet/pay}" method="post" style="margin-top: 2rem;">
+                        <input type="hidden" name="amount" th:value="${amount}">
+                        <input type="hidden" name="method" id="payment-method-input" value="UPI">
+                        <button type="button" class="btn btn-primary btn-lg w-100" onclick="startPayment()">Pay
+                            Securely</button>
+                    </form>
+
+                    <p style="text-align: center; font-size: 0.75rem; color: var(--text-secondary); margin-top: 2rem;">
+                        🔒 Encrypted by 256-bit SSL security
+                    </p>
+                </div>
+            </aside>
+        </div>
+    </div>
+
+    <!-- Processing Overlay -->
+    <div id="processing-overlay" class="processing-overlay">
+        <div class="spinner"></div>
+        <h2 style="font-weight: 800; margin-bottom: 1rem;">Processing Payment</h2>
+        <p style="color: var(--text-secondary);">Please do not refresh or close the window...</p>
+        <div style="margin-top: 3rem; display: flex; gap: 1rem; align-items: center;">
+            <span style="background: var(--primary); padding: 4px 12px; border-radius: 20px; font-size: 0.7rem;">PCI-DSS
+                COMPLIANT</span>
+        </div>
+    </div>
+
+    <script>
+        let selectedApp = '';
+
+        function selectMethod(method, el) {
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+            el.classList.add('active');
+            document.getElementById('payment-method-input').value = method;
+
+            // Show/Hide details
+            document.getElementById('upi-details').style.display = method === 'UPI' ? 'grid' : 'none';
+            document.getElementById('card-details').style.display = method === 'Card' ? 'block' : 'none';
+
+            // Reset UPI Box if shifting major methods
+            if (method !== 'UPI') {
+                document.getElementById('upi-id-box').style.display = 'none';
+                selectedApp = '';
+            }
+        }
+
+        function selectUpiApp(appName) {
+            selectedApp = appName;
+            document.querySelectorAll('.upi-app').forEach(app => {
+                app.style.borderColor = app.innerText === appName ? 'var(--primary)' : 'transparent';
+                app.style.background = app.innerText === appName ? 'rgba(108, 99, 255, 0.1)' : 'rgba(255, 255, 255, 0.05)';
+            });
+
+            const upiBox = document.getElementById('upi-id-box');
+            upiBox.style.display = 'block';
+            document.getElementById('upi-label').innerText = `Enter your ${appName} UPI ID`;
+            document.getElementById('payment-method-input').value = `UPI (${appName})`;
+        }
+
+        function startPayment() {
+            const methodInput = document.getElementById('payment-method-input').value;
+
+            // Basic UPI Validation
+            if (methodInput.startsWith('UPI')) {
+                const upiId = document.getElementById('upi-id-input').value;
+                if (!upiId || !upiId.includes('@')) {
+                    alert('Please enter a valid UPI ID (e.g., username@bank)');
+                    return;
+                }
+            }
+
+            const overlay = document.getElementById('processing-overlay');
+            overlay.style.display = 'flex';
+
+            // Simulate processing time
+            setTimeout(() => {
+                document.getElementById('payment-form').submit();
+            }, 3000);
+        }
+    </script>
+</body>
+
+</html>

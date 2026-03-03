@@ -55,7 +55,10 @@ public class HomeController {
     }
 
     @GetMapping("/contact")
-    public String contact() {
+    public String contact(org.springframework.security.core.Authentication auth, Model model) {
+        if (auth != null && auth.isAuthenticated()) {
+            userService.findByUsername(auth.getName()).ifPresent(user -> model.addAttribute("user", user));
+        }
         return "contact";
     }
 
@@ -63,14 +66,26 @@ public class HomeController {
     public String sendContact(@RequestParam String name,
             @RequestParam String email,
             @RequestParam String message,
+            org.springframework.security.core.Authentication auth,
             RedirectAttributes redirectAttrs) {
         try {
             if (name.isBlank() || email.isBlank() || message.isBlank()) {
                 redirectAttrs.addFlashAttribute("error", "All fields are required.");
                 return "redirect:/contact";
             }
-            notificationService.saveContactMessage(name.trim(), email.trim(), message.trim());
-            notificationService.notifyAdminsContactMessage(name.trim(), email.trim(), null);
+
+            // Identify user role if logged in
+            String senderDetails = name.trim();
+            if (auth != null && auth.isAuthenticated()) {
+                User user = userService.findByUsername(auth.getName()).orElse(null);
+                if (user != null) {
+                    senderDetails = "[" + user.getRole() + "] " + name.trim();
+                }
+            }
+
+            ContactMessage savedMsg = notificationService.saveContactMessage(name.trim(), email.trim(), message.trim());
+            notificationService.notifyAdminsContactMessage(senderDetails, email.trim(), savedMsg.getId());
+
             redirectAttrs.addFlashAttribute("success",
                     "✅ Message sent! We'll get back to you at " + email + " soon.");
         } catch (Exception e) {
@@ -83,6 +98,42 @@ public class HomeController {
     @GetMapping("/pricing")
     public String pricing() {
         return "pricing";
+    }
+
+    @PostMapping("/hire/freelancer/{id}")
+    public String hireFreelancer(@PathVariable Long id, Authentication auth, RedirectAttributes redirectAttrs) {
+        if (auth == null) {
+            redirectAttrs.addFlashAttribute("error", "Please login to hire professionals.");
+            return "redirect:/login";
+        }
+
+        User client = userService.findByUsername(auth.getName()).orElse(null);
+        User freelancer = userService.findById(id).orElse(null);
+
+        if (client == null || freelancer == null) {
+            redirectAttrs.addFlashAttribute("error", "User profiles not found.");
+            return "redirect:/";
+        }
+
+        if (client.getRole() != Role.CLIENT) {
+            redirectAttrs.addFlashAttribute("error", "Only clients can hire professionals.");
+            return "redirect:/profile/" + id;
+        }
+
+        // Notify Client
+        notificationService.send(client, "✅ Request Processed",
+                "Your request to hire " + freelancer.getFullName() + " has been sent successfully!",
+                "HIRE_SUCCESS", "/client/dashboard");
+
+        // Notify Freelancer
+        notificationService.send(freelancer, "🎯 New Hiring Request!",
+                "Client " + client.getFullName() + " wants to collaborate with you. Check your messages!",
+                "NEW_HIRE", "/freelancer/dashboard");
+
+        redirectAttrs.addFlashAttribute("success",
+                "✅ Hiring request sent! " + freelancer.getFullName() + " has been notified.");
+
+        return "redirect:/profile/" + id;
     }
 
     @GetMapping("/dashboard")

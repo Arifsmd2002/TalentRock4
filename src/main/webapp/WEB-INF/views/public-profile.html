@@ -180,6 +180,41 @@
         .logo span {
             color: #6366f1;
         }
+
+        .alert {
+            padding: 1rem 1.5rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #166534;
+            border: 1px solid #bbf7d0;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 
@@ -193,6 +228,10 @@
     </nav>
 
     <div class="profile-container">
+        <!-- Alerts -->
+        <div th:if="${success}" class="alert alert-success" th:text="${success}">Success message</div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}">Error message</div>
+
         <!-- Header Section -->
         <div class="profile-header">
             <div class="profile-avatar-large" th:text="${freelancer.fullName.substring(0,1)}">A</div>
@@ -248,7 +287,10 @@
                         <span class="stat-value" style="color:#10b981;">Full Time</span>
                     </div>
 
-                    <a href="/register" class="hire-btn-large">Hire This Professional</a>
+                    <form th:action="@{'/hire/freelancer/' + ${freelancer.id}}" method="post">
+                        <button type="submit" class="hire-btn-large" style="border:none; cursor:pointer;">Hire This
+                            Professional</button>
+                    </form>
                     <p style="text-align:center; color:#94a3b8; font-size:0.8rem; margin-top:1rem;">Secure payment via
                         Talentrock Escrow</p>
                 </div>

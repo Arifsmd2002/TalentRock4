@@ -28,6 +28,7 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String dashboard(Authentication auth, Model model) {
+        model.addAttribute("currentPage", "dashboard");
         model.addAttribute("user", userService.findByUsername(auth.getName()).orElseThrow());
         model.addAttribute("totalUsers", userService.findAll().size());
         model.addAttribute("totalClients", userService.countByRole(Role.CLIENT));
@@ -49,6 +50,7 @@ public class AdminController {
 
     @GetMapping("/subscriptions")
     public String subscriptions(Authentication auth, Model model) {
+        model.addAttribute("currentPage", "subscriptions");
         model.addAttribute("user", userService.findByUsername(auth.getName()).orElseThrow());
         model.addAttribute("subscriptions", subscriptionService.findAll());
         model.addAttribute("activeSubscriptions", subscriptionService.countActive());
@@ -57,13 +59,16 @@ public class AdminController {
         model.addAttribute("growthCount", subscriptionService.countByPlan(SubscriptionPlan.GROWTH));
         model.addAttribute("proCount", subscriptionService.countByPlan(SubscriptionPlan.PRO));
         model.addAttribute("eliteCount", subscriptionService.countByPlan(SubscriptionPlan.ELITE));
+        model.addAttribute("unreadMessages", notificationService.countUnreadContactMessages());
         return "admin/subscriptions";
     }
 
     @GetMapping("/users")
     public String users(Authentication auth, Model model) {
+        model.addAttribute("currentPage", "users");
         model.addAttribute("user", userService.findByUsername(auth.getName()).orElseThrow());
         model.addAttribute("users", userService.findAll());
+        model.addAttribute("unreadMessages", notificationService.countUnreadContactMessages());
         return "admin/users";
     }
 
@@ -76,6 +81,7 @@ public class AdminController {
 
     @GetMapping("/messages")
     public String messages(Authentication auth, Model model) {
+        model.addAttribute("currentPage", "messages");
         model.addAttribute("user", userService.findByUsername(auth.getName()).orElseThrow());
         model.addAttribute("messages", notificationService.getAllContactMessages());
         model.addAttribute("unreadMessages", notificationService.countUnreadContactMessages());
@@ -90,8 +96,10 @@ public class AdminController {
 
     @GetMapping("/projects")
     public String projects(Authentication auth, Model model) {
+        model.addAttribute("currentPage", "projects");
         model.addAttribute("user", userService.findByUsername(auth.getName()).orElseThrow());
         model.addAttribute("projects", projectService.findAllProjects());
+        model.addAttribute("unreadMessages", notificationService.countUnreadContactMessages());
         return "admin/projects";
     }
 }

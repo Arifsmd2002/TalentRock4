@@ -576,7 +576,11 @@ textarea.form-control {
 
 /* ─────────── FEATURES GRID ─────────── */
 .features-section {
-  padding: 6rem 2rem;
+  padding: 8rem 2rem;
+  background: linear-gradient(rgba(10, 11, 15, 0.7), rgba(10, 11, 15, 0.8)), url('../images/phoenix-bg.jpg');
+  background-size: cover;
+  background-position: center 25%;
+  position: relative;
 }
 
 .section-header {
@@ -729,6 +733,29 @@ textarea.form-control {
   position: relative;
   z-index: 2;
 }
+
+
+/* ─────────── CTA SECTION ─────────── */
+.cta-section {
+  padding: 6rem 2rem;
+  background:
+    radial-gradient(circle at center, rgba(108, 99, 255, 0.15) 0%, transparent 70%),
+    linear-gradient(rgba(10, 11, 15, 0.4), rgba(10, 11, 15, 0.2)),
+    url('../images/hummingbird-bg.jpg');
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.cta-section .container {
+  position: relative;
+  z-index: 2;
+  text-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+}
+
 
 /* ─────────── PROJECT CARDS ─────────── */
 .project-card {
@@ -1240,6 +1267,10 @@ tbody tr:hover {
   grid-template-columns: repeat(4, 1fr);
 }
 
+.grid-5 {
+  grid-template-columns: repeat(5, 1fr);
+}
+
 /* ─────────── FLEX UTILS ─────────── */
 .flex {
   display: flex;
@@ -1588,8 +1619,18 @@ tbody tr:hover {
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1.25rem 2.5rem;
+}
+
+.category-heading {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 1.25rem;
+  font-family: 'Space Grotesk', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .category-item {
@@ -1599,6 +1640,7 @@ tbody tr:hover {
   transition: all 0.2s;
   cursor: pointer;
   display: block;
+  margin-bottom: 0.75rem;
 }
 
 .category-item:hover {
@@ -1617,89 +1659,94 @@ tbody tr:hover {
   margin-top: 0.5rem;
 }
 
-/* ─────────── PREMIUM FOOTER ─────────── */
+/* ─────────── PREMIUM FOOTER - REDESIGNED ─────────── */
 .main-footer {
-  background-color: #0f111a;
+  background-color: #050608;
   color: #fff;
-  padding: 6rem 2rem 2rem;
+  padding: 5rem 2rem 2rem;
   border-top: 1px solid rgba(255, 255, 255, 0.05);
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-family: 'Inter', sans-serif;
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
-.footer-grid {
-  display: grid;
-  grid-template-columns: 1.5fr 1fr 1fr 1fr;
-  gap: 3rem;
+.footer-top {
+  display: flex;
+  gap: 4rem;
   margin-bottom: 4rem;
 }
 
-.footer-brand {
+/* Footer Left Side */
+.footer-side {
+  flex: 0 0 280px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 .footer-logo {
-  font-size: 1.5rem;
-  font-weight: 800;
+  font-size: 1.8rem;
+  font-weight: 900;
   color: #fff;
   text-decoration: none;
   display: flex;
   align-items: center;
-  gap: 10px;
-  letter-spacing: 0.1em;
+  gap: 12px;
+  letter-spacing: -0.02em;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .footer-logo .logo-icon {
   color: #6366f1;
-  font-size: 1.8rem;
+  font-size: 2rem;
 }
 
-.footer-tagline {
-  color: #94a3b8;
-  line-height: 1.6;
-  font-size: 0.95rem;
-  max-width: 320px;
-}
-
-.social-links {
+.footer-side-actions {
   display: flex;
-  gap: 1rem;
+  flex-direction: column;
+  gap: 1.25rem;
 }
 
-.social-icon {
-  width: 36px;
-  height: 36px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
+.footer-side-link {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
   color: #94a3b8;
-  text-decoration: none;
-  font-weight: 700;
-  transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
 }
 
-.social-icon:hover {
-  background: #6366f1;
-  color: #fff;
-  transform: translateY(-3px);
+.footer-side-link i,
+.footer-side-link .icon {
+  font-size: 1.2rem;
+  width: 24px;
+  text-align: center;
 }
 
-.footer-title {
+.footer-side-link:hover {
   color: #fff;
-  font-size: 1.1rem;
+  transform: translateX(4px);
+}
+
+/* Footer Right Side - Grid Columns */
+.footer-links-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+}
+
+.footer-col-title {
+  color: #fff;
+  font-size: 1rem;
   font-weight: 700;
   margin-bottom: 1.5rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-family: 'Space Grotesk', sans-serif;
 }
 
 .footer-links {
@@ -1708,13 +1755,13 @@ tbody tr:hover {
   margin: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
+  gap: 0.75rem;
 }
 
 .footer-links a {
   color: #94a3b8;
   text-decoration: none;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.2s ease;
 }
@@ -1724,6 +1771,7 @@ tbody tr:hover {
   padding-left: 4px;
 }
 
+/* Footer Bottom */
 .footer-bottom {
   display: flex;
   justify-content: space-between;
@@ -1734,20 +1782,156 @@ tbody tr:hover {
   font-size: 0.85rem;
 }
 
-.footer-legal {
+.footer-legal-links {
   display: flex;
   gap: 2rem;
 }
 
-.footer-legal a {
+.footer-legal-links a {
   color: #64748b;
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
-.footer-legal a:hover {
+.footer-legal-links a:hover {
   color: #fff;
 }
+
+/* ─────────── LIVE SUPPORT WIDGET ─────────── */
+.support-widget {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 9999;
+  width: 350px;
+  background: var(--bg-card);
+  border: 1px solid var(--bg-border);
+  border-radius: 20px;
+  box-shadow: var(--shadow-lg);
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  animation: slideInUp 0.3s ease;
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(100%) scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.support-header {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  padding: 1.25rem;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.support-header h3 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.close-support {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  opacity: 0.8;
+}
+
+.support-body {
+  padding: 1.5rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.support-agent-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.support-avatar {
+  width: 44px;
+  height: 44px;
+  background: var(--bg-surface);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  border: 2px solid var(--primary);
+}
+
+.support-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.support-form label {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.support-form .form-control {
+  background: var(--bg-surface);
+  border: 1px solid var(--bg-border);
+  font-size: 0.9rem;
+  padding: 10px;
+}
+
+.support-form textarea.form-control {
+  min-height: 80px;
+}
+
+/* ─────────── RESPONSIVE ─────────── */
+@media (max-width: 1024px) {
+  .footer-top {
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .footer-side {
+    flex: none;
+    width: 100%;
+    align-items: center;
+    text-align: center;
+  }
+
+  .footer-side-actions {
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .footer-links-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .footer-links-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .footer-bottom {
+    flex-direction: column;
+    gap: 1.5rem;
+    text-align: center;
+  }
+}
+
 
 /* ─────────── RESPONSIVE ─────────── */
 @media (max-width: 1024px) {
@@ -1826,4 +2010,345 @@ tbody tr:hover {
   .navbar-toggle {
     display: block;
   }
+}
+
+/* ─────────── ACCESSIBILITY ENGINE ─────────── */
+:root {
+  --acc-font-size: 1rem;
+}
+
+/* Base Transition for Real-time smoothness */
+body {
+  transition: background-color 0.3s ease, font-size 0.2s ease;
+}
+
+/* 1. Dark Contrast / High Contrast */
+body.acc-dark-contrast {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+}
+
+body.acc-dark-contrast :not(.acc-menu):not(.acc-menu *) {
+  background-color: #0d1117 !important;
+  color: #f0f6fc !important;
+  border-color: #30363d !important;
+}
+
+body.acc-dark-contrast a:not(.acc-menu *) {
+  color: #58a6ff !important;
+}
+
+/* 2. Bigger Text */
+body.acc-bigger-text {
+  font-size: 1.2rem !important;
+}
+
+body.acc-bigger-text h1,
+body.acc-bigger-text h2,
+body.acc-bigger-text h3 {
+  font-size: 1.4em !important;
+}
+
+body.acc-bigger-text p,
+body.acc-bigger-text span,
+body.acc-bigger-text a,
+body.acc-bigger-text li,
+body.acc-bigger-text div:not(.acc-menu) {
+  font-size: 1.1em !important;
+}
+
+/* 3. Highlight Links */
+body.acc-highlight-links a:not(.acc-menu *) {
+  background-color: #2b59ff !important;
+  color: #fff !important;
+  padding: 2px 4px !important;
+  border-radius: 4px !important;
+  text-decoration: underline !important;
+  box-shadow: 0 0 10px rgba(43, 89, 255, 0.5) !important;
+}
+
+/* 4. Light Spacing */
+body.acc-light-spacing * :not(.acc-menu) {
+  letter-spacing: 0.15em !important;
+  word-spacing: 0.3em !important;
+  line-height: 1.8 !important;
+}
+
+/* 5. Hide Images */
+body.acc-hide-images img,
+body.acc-hide-images .feature-icon,
+body.acc-hide-images .avatar,
+body.acc-hide-images [style*="background-image"] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+/* 6. Dyslexia Friendly */
+body.acc-dyslexic {
+  font-family: 'OpenDyslexic', cursive, sans-serif !important;
+}
+
+
+/* ─────────── PREMIUM ASSISTANT & ACCESSIBILITY (UserWay Style) ─────────── */
+.acc-menu {
+  position: fixed;
+  bottom: 2rem;
+  right: -450px;
+  width: 400px;
+  max-height: calc(100vh - 4rem);
+  background: #fff;
+  z-index: 10001;
+  box-shadow: 0 10px 50px rgba(0, 0, 0, 0.2);
+  transition: right 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  flex-direction: column;
+  color: #333;
+  border-radius: 24px;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+}
+
+.acc-menu.active {
+  right: 2rem;
+}
+
+.acc-header {
+  background: #2b59ff;
+  color: #fff;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.acc-header h2 {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+  text-transform: none;
+}
+
+.close-acc {
+  background: rgba(255, 255, 255, 0.15);
+  border: none;
+  color: #fff;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.acc-content {
+  padding: 1.5rem;
+  overflow-y: auto;
+  background: #fff;
+  flex: 1;
+}
+
+/* Agent Header inside Menu */
+.acc-agent-profile {
+  background: #f0f4ff;
+  border-radius: 16px;
+  padding: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 1.5rem;
+}
+
+.acc-agent-img {
+  width: 52px;
+  height: 52px;
+  background: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: 2px solid #2b59ff;
+  box-shadow: 0 4px 10px rgba(43, 89, 255, 0.2);
+}
+
+.acc-agent-info h4 {
+  font-size: 0.95rem;
+  margin: 0;
+  color: #1e293b;
+  font-weight: 700;
+}
+
+.acc-agent-info p {
+  font-size: 0.75rem;
+  margin: 2px 0 0;
+  color: #64748b;
+}
+
+.acc-how-it-works {
+  width: 100%;
+  background: #2b59ff;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 14px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 2rem;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(43, 89, 255, 0.3);
+}
+
+.acc-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.acc-option {
+  background: #fff;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 1.5rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+}
+
+.acc-option:hover {
+  border-color: #2b59ff;
+  background: #fcfdff;
+}
+
+.acc-option::before {
+  content: '';
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 16px;
+  height: 16px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.acc-option.active {
+  border-color: #2b59ff;
+  background: #f8faff;
+  box-shadow: 0 8px 20px rgba(43, 89, 255, 0.08);
+}
+
+.acc-option.active::before {
+  content: '✓';
+  background: #2b59ff;
+  color: white;
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.acc-option .icon {
+  font-size: 1.6rem;
+  color: #2b59ff;
+}
+
+.acc-option span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #334155;
+}
+
+.acc-footer {
+  padding: 1.25rem 1.5rem;
+  background: #fff;
+  border-top: 1px solid #f1f5f9;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.acc-manage-btn {
+  background: #1e293b;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.acc-logo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  font-weight: 900;
+  color: #1e293b;
+}
+
+.acc-logo span {
+  color: #2b59ff;
+}
+
+/* Floating Assistant Button */
+.floating-assistant-trigger {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 60px;
+  height: 60px;
+  background: #2b59ff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.8rem;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 8px 25px rgba(43, 89, 255, 0.4);
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.floating-assistant-trigger:hover {
+  transform: scale(1.1) rotate(5deg);
+}
+
+.floating-assistant-trigger .badge {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  background: #ef4444;
+  color: white;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 100px;
+  font-weight: 700;
+  border: 2px solid #fff;
+}
+
+/* Accessibility Overlay */
+.acc-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 10000;
+  display: none;
+  backdrop-filter: blur(5px);
+}
+
+.acc-overlay.active {
+  display: block;
 }

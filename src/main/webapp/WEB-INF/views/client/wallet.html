@@ -13,45 +13,160 @@
         <div th:replace="~{fragments/client-sidebar :: client-sidebar}"></div>
 
         <main class="main-content">
-            <div class="page-header">
-                <h1 class="page-title">Wallet 💰</h1>
-                <p class="page-subtitle">Manage your Talentrock balance</p>
+            <div class="page-header" style="margin-bottom: 3rem;">
+                <h1 class="page-title" style="font-size: 2.5rem; display: flex; align-items: center; gap: 12px;">
+                    Wallet <span style="font-size: 2rem;">💰</span>
+                </h1>
+                <p class="page-subtitle" style="color: var(--text-secondary);">Manage your Talentrock balance and view
+                    transaction history</p>
             </div>
 
-            <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
-            <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
+            <div th:if="${success}" class="alert alert-success animate-fade-in"
+                style="margin-bottom: 2rem; border-radius: 12px; background: rgba(74, 222, 128, 0.1); border: 1px solid rgba(74, 222, 128, 0.2); color: #4ADE80; padding: 1.25rem; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.2rem;">✅</span>
+                <span th:text="${success}" style="font-weight: 500;"></span>
+            </div>
 
-            <div class="grid grid-2 mb-4">
+            <div th:if="${error}" class="alert alert-error" style="margin-bottom: 2rem;"><span
+                    th:text="${error}"></span></div>
+
+            <div class="grid grid-2 mb-4" style="gap: 2rem;">
                 <!-- Balance Card -->
-                <div class="wallet-box">
-                    <div class="wallet-label">Current Balance</div>
-                    <div class="wallet-amount">₹<span
-                            th:text="${#numbers.formatDecimal(user.walletBalance, 1, 2)}">0.00</span></div>
-                    <div class="text-sm mt-2" style="opacity:0.75;">Platform commission: 5% per milestone</div>
+                <div class="wallet-gradient-card"
+                    style="background: linear-gradient(135deg, #6C63FF 0%, #00D4AA 100%); border-radius: 24px; padding: 3rem; color: white; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(108, 99, 255, 0.2);">
+                    <div
+                        style="position: absolute; right: -20px; top: -20px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%;">
+                    </div>
+
+                    <div style="font-size: 1rem; opacity: 0.9; font-weight: 500; margin-bottom: 1.5rem;">Current Balance
+                    </div>
+                    <div
+                        style="font-size: 4rem; font-weight: 800; font-family: 'Space Grotesk', sans-serif; letter-spacing: -2px; line-height: 1;">
+                        ₹<span th:text="${#numbers.formatDecimal(user.walletBalance, 1, 2)}">0.00</span>
+                    </div>
+
+                    <div
+                        style="margin-top: 3rem; font-size: 0.85rem; opacity: 0.8; display: flex; align-items: center; gap: 8px;">
+                        <span style="width: 8px; height: 8px; background: white; border-radius: 50%;"></span>
+                        Platform commission: 5% per milestone
+                    </div>
                 </div>
 
                 <!-- Add Funds -->
-                <div class="card">
-                    <div class="card-body">
-                        <h3 style="margin-bottom:1.25rem;">Add Funds</h3>
+                <div class="card"
+                    style="border-radius: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="card-body" style="padding: 2.5rem;">
+                        <h3 style="margin-bottom: 2rem; font-size: 1.5rem;">Add Funds 💳</h3>
                         <form th:action="@{/client/wallet/add}" method="post">
-                            <div class="form-group">
-                                <label class="form-label">Amount (₹)</label>
+                            <div class="form-group mb-4">
+                                <label class="form-label"
+                                    style="text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; font-weight: 700; color: var(--text-muted);">Amount
+                                    (₹)</label>
                                 <input type="number" name="amount" class="form-control" placeholder="Enter amount"
-                                    min="100" required />
+                                    min="100" required
+                                    style="font-size: 1.25rem; padding: 1rem 1.25rem; background: rgba(0,0,0,0.2);" />
                             </div>
-                            <div class="flex gap-2 mb-3">
-                                <button type="button" class="btn btn-ghost btn-sm"
+                            <div class="flex gap-2 mb-4" style="flex-wrap: wrap;">
+                                <button type="button" class="btn btn-ghost btn-sm" style="flex: 1; min-width: 80px;"
                                     onclick="document.querySelector('[name=amount]').value='500'">₹500</button>
-                                <button type="button" class="btn btn-ghost btn-sm"
+                                <button type="button" class="btn btn-ghost btn-sm" style="flex: 1; min-width: 80px;"
                                     onclick="document.querySelector('[name=amount]').value='1000'">₹1,000</button>
-                                <button type="button" class="btn btn-ghost btn-sm"
+                                <button type="button" class="btn btn-ghost btn-sm" style="flex: 1; min-width: 80px;"
                                     onclick="document.querySelector('[name=amount]').value='5000'">₹5,000</button>
-                                <button type="button" class="btn btn-ghost btn-sm"
-                                    onclick="document.querySelector('[name=amount]').value='10000'">₹10,000</button>
                             </div>
-                            <button type="submit" class="btn btn-primary" style="width:100%;">Add to Wallet ↗</button>
+                            <button type="submit" class="btn btn-primary"
+                                style="width: 100%; padding: 1.25rem; font-size: 1.1rem; border-radius: 12px;">
+                                Add to Wallet ↗
+                            </button>
                         </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-2 mb-4" style="gap: 2rem; margin-top: 2rem;">
+                <!-- Withdraw Funds -->
+                <div class="card"
+                    style="border-radius: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="card-body" style="padding: 2.5rem;">
+                        <h3 style="margin-bottom: 2rem; font-size: 1.5rem;">Withdraw to Bank 🏦</h3>
+                        <form th:action="@{/client/wallet/withdraw}" method="post">
+                            <div class="form-group mb-4">
+                                <label class="form-label text-xs font-bold text-muted uppercase">Withdraw Amount
+                                    (₹)</label>
+                                <input type="number" name="amount" class="form-control" th:max="${user.walletBalance}"
+                                    placeholder="Enter amount" required style="background: rgba(0,0,0,0.2);" />
+                            </div>
+                            <div class="grid grid-2" style="gap: 1rem;">
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-xs font-bold text-muted uppercase">Holder Name</label>
+                                    <input type="text" name="accountName" class="form-control" placeholder="John Doe"
+                                        required style="background: rgba(0,0,0,0.2);" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-xs font-bold text-muted uppercase">Account No</label>
+                                    <input type="text" name="accountNumber" class="form-control"
+                                        placeholder="1234567890" required style="background: rgba(0,0,0,0.2);" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-xs font-bold text-muted uppercase">IFSC Code</label>
+                                    <input type="text" name="ifscCode" class="form-control" placeholder="SBIN0001234"
+                                        required style="background: rgba(0,0,0,0.2);" />
+                                </div>
+                                <div class="form-group mb-3">
+                                    <label class="form-label text-xs font-bold text-muted uppercase">Bank Name</label>
+                                    <input type="text" name="bankName" class="form-control"
+                                        placeholder="State Bank of India" required
+                                        style="background: rgba(0,0,0,0.2);" />
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-secondary"
+                                style="width: 100%; padding: 1.25rem; font-size: 1.1rem; border-radius: 12px; margin-top: 1rem;">
+                                Request Withdrawal ↗
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Withdrawal History -->
+                <div class="card"
+                    style="border-radius: 20px; background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255,255,255,0.05); overflow: hidden;">
+                    <div class="card-header" style="padding: 2.5rem 2.5rem 1rem;">
+                        <h3 style="font-size: 1.5rem;">History 📊</h3>
+                    </div>
+                    <div class="card-body" style="padding: 0 2.5rem 2.5rem;">
+                        <div th:if="${#lists.isEmpty(withdrawals)}" class="text-center"
+                            style="padding: 3rem; opacity: 0.5;">
+                            <div style="font-size: 3rem;">🌑</div>
+                            <p>No transactions yet</p>
+                        </div>
+                        <table th:if="${!#lists.isEmpty(withdrawals)}" class="table"
+                            style="width: 100%; color: white; border-collapse: collapse;">
+                            <thead>
+                                <tr style="border-bottom: 1px solid rgba(255,255,255,0.1); text-align: left;">
+                                    <th style="padding: 1rem 0; font-size: 0.8rem; font-weight: 700; opacity: 0.6;">DATE
+                                    </th>
+                                    <th style="padding: 1rem 0; font-size: 0.8rem; font-weight: 700; opacity: 0.6;">
+                                        AMOUNT</th>
+                                    <th style="padding: 1rem 0; font-size: 0.8rem; font-weight: 700; opacity: 0.6;">
+                                        STATUS</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="w : ${withdrawals}"
+                                    style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                                    <td th:text="${#temporals.format(w.createdAt, 'dd MMM')}"
+                                        style="padding: 1rem 0; font-size: 0.9rem;"></td>
+                                    <td style="padding: 1rem 0; font-size: 0.9rem; font-weight: 700;">₹<span
+                                            th:text="${w.amount}"></span></td>
+                                    <td style="padding: 1rem 0;">
+                                        <span th:if="${w.status == 'PENDING'}"
+                                            style="color: #FBBF24; font-size: 0.75rem; font-weight: 700; background: rgba(251, 191, 36, 0.1); padding: 4px 12px; border-radius: 100px;">Pending</span>
+                                        <span th:if="${w.status == 'APPROVED'}"
+                                            style="color: #34D399; font-size: 0.75rem; font-weight: 700; background: rgba(52, 211, 153, 0.1); padding: 4px 12px; border-radius: 100px;">Approved</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>

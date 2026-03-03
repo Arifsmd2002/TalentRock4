@@ -16,12 +16,15 @@ public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
     private final WalletTransactionRepository walletTransactionRepository;
+    private final BidRepository bidRepository;
 
     public SubscriptionService(SubscriptionRepository subscriptionRepository,
             UserRepository userRepository,
-            WalletTransactionRepository walletTransactionRepository) {
+            WalletTransactionRepository walletTransactionRepository,
+            BidRepository bidRepository) {
         this.subscriptionRepository = subscriptionRepository;
         this.walletTransactionRepository = walletTransactionRepository;
+        this.bidRepository = bidRepository;
     }
 
     // ----------------------------------------------------------------
@@ -130,5 +133,41 @@ public class SubscriptionService {
     public void downgradeToFree(User user) {
         cancel(user);
         // Free plan requires no Subscription record — bid limits reset via plan enum
+    }
+
+    // ----------------------------------------------------------------
+    // BID MANAGEMENT
+    // ----------------------------------------------------------------
+    public int getRemainingBids(User user) {
+        Optional<Subscription> active = findActive(user);
+        SubscriptionPlan plan = active.isPresent() ? active.get().getPlan() : SubscriptionPlan.FREE;
+
+        if (plan == SubscriptionPlan.ELITE)
+            return Integer.MAX_VALUE;
+
+        int totalAllowed = plan.getMonthlyBids();
+        int used;
+
+        if (active.isPresent()) {
+            used = active.get().getBidsUsedThisCycle();
+        } else {
+            // Count bids for free users in current month
+            used = (int) bidRepository.countByFreelancerAndCreatedAtAfter(user,
+                    LocalDate.now().withDayOfMonth(1).atStartOfDay());
+        }
+
+        return Math.max(0, totalAllowed - used);
+    }
+
+    @Transactional
+    public void useBid(User user) {
+        Optional<Subscription> active = findActive(user);
+        if (active.isPresent()) {
+            Subscription s = active.get();
+            s.setBidsUsedThisCycle(s.getBidsUsedThisCycle() + 1);
+            subscriptionRepository.save(s);
+        }
+        // For free users, usage is tracked by counting Bid records, so no update needed
+        // here
     }
 }

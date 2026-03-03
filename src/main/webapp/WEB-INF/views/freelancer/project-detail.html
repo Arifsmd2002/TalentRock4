@@ -74,7 +74,14 @@
                 <!-- Bid Form -->
                 <div>
                     <div class="card" th:if="${!alreadyBid}">
-                        <div class="card-header">💼 Submit Your Bid</div>
+                        <div class="card-header flex-between">
+                            <span>💼 Submit Your Bid</span>
+                            <span class="badg"
+                                style="font-size: 0.7rem; background: rgba(108, 99, 255, 0.1); color: var(--primary-light); padding: 4px 10px; border-radius: 100px; font-weight: 700;">
+                                <span th:text="${remainingBids == 2147483647 ? 'Unlimited' : remainingBids}">0</span>
+                                Bids Left
+                            </span>
+                        </div>
                         <div class="card-body">
                             <form th:action="@{/freelancer/project/{id}/bid(id=${project.id})}" method="post">
                                 <div class="form-group">

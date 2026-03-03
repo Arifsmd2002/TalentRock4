@@ -36,14 +36,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public String register(@ModelAttribute User user,
-            @RequestParam String confirmPassword,
             @RequestParam String role,
             RedirectAttributes redirectAttrs) {
         try {
-            if (!user.getPassword().equals(confirmPassword)) {
-                redirectAttrs.addFlashAttribute("error", "Passwords do not match!");
-                return "redirect:/register";
-            }
             user.setRole(Role.valueOf(role.toUpperCase()));
             userService.register(user);
             redirectAttrs.addFlashAttribute("success", "Account created! Please login.");
@@ -52,5 +47,11 @@ public class AuthController {
             redirectAttrs.addFlashAttribute("error", e.getMessage());
             return "redirect:/register";
         }
+    }
+
+    @GetMapping("/forgot-password")
+    public String forgotPasswordPage() {
+        // Implementation here would redirect to a password reset page
+        return "auth/forgot-password";
     }
 }

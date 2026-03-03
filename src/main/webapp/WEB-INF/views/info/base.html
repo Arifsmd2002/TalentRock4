@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title th:text="${title + ' | Talentrock'}">Info | Talentrock</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <style>
+        .info-container {
+            min-height: 100vh;
+            padding: 120px 2rem 6rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .info-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .info-content {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 3rem;
+            line-height: 1.8;
+            color: var(--text-secondary);
+        }
+
+        .info-content h2 {
+            color: var(--text-primary);
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            font-size: 1.75rem;
+        }
+
+        .info-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .info-content ul {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+        }
+
+        .info-content li {
+            margin-bottom: 0.5rem;
+        }
+
+        .gradient-box {
+            background: linear-gradient(135deg, rgba(108, 99, 255, 0.1), rgba(0, 212, 170, 0.1));
+            border: 1px solid rgba(108, 99, 255, 0.2);
+            border-radius: 16px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar" th:fragment="nav">
+        <a href="/" class="navbar-brand">
+            <img th:src="@{/images/logo.png}" alt="Logo">
+            Talentrock
+        </a>
+        <ul class="navbar-nav">
+            <li><a href="/" class="nav-link">Home</a></li>
+            <li><a href="/about" class="nav-link">About</a></li>
+            <li><a href="/pricing" class="nav-link">Pricing</a></li>
+            <li><a href="/login" class="btn btn-primary btn-sm" style="margin-left:8px">Get Started</a></li>
+        </ul>
+    </nav>
+
+    <div class="info-container">
+        <div class="info-header">
+            <span class="section-tag" th:text="${title}">Information</span>
+            <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;" th:text="${title}">Page Title</h1>
+            <p style="font-size:1.1rem; color:var(--text-secondary); max-width:700px; margin:0 auto;">
+                Last updated: March 2026 • Talentrock Platform Transparency Initiative
+            </p>
+        </div>
+
+        <div class="info-content" th:fragment="content">
+            <!-- Specific content will be injected here -->
+        </div>
+    </div>
+
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>

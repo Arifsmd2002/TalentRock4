@@ -4,8 +4,134 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Wallet | Talentrock</title>
+    <title>Wallet Dashboard | Talentrock</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <style>
+        .wallet-card-mini {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 20px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            transition: var(--transition);
+        }
+
+        .wallet-card-mini:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .wallet-card-mini.primary {
+            background: linear-gradient(135deg, #6C63FF 0%, #3B3699 100%);
+            border: none;
+        }
+
+        .wallet-card-mini.secondary {
+            background: linear-gradient(135deg, #00D4AA 0%, #008F72 100%);
+            border: none;
+        }
+
+        .transaction-type-badge {
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .type-credit {
+            background: rgba(74, 222, 128, 0.15);
+            color: #4ADE80;
+        }
+
+        .type-debit {
+            background: rgba(248, 113, 113, 0.15);
+            color: #F87171;
+        }
+
+        .type-commission {
+            background: rgba(139, 133, 255, 0.15);
+            color: #8B85FF;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: var(--bg-card);
+            border: 1px solid var(--bg-border);
+            border-radius: 24px;
+            width: 100%;
+            max-width: 500px;
+            padding: 2.5rem;
+            position: relative;
+            animation: modalIn 0.3s ease-out;
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95) translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .close-modal:hover {
+            color: white;
+        }
+
+        .payment-method-card {
+            border: 1.5px solid var(--bg-border);
+            border-radius: 12px;
+            padding: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 0.75rem;
+        }
+
+        .payment-method-card:hover {
+            background: var(--bg-surface);
+        }
+
+        .payment-method-card.active {
+            border-color: var(--primary);
+            background: rgba(108, 99, 255, 0.1);
+        }
+
+        .payment-method-card input {
+            display: none;
+        }
+    </style>
 </head>
 
 <body>
@@ -13,41 +139,314 @@
         <div th:replace="~{fragments/freelancer-sidebar :: freelancer-sidebar}"></div>
 
         <main class="main-content">
-            <div class="page-header">
-                <h1 class="page-title">Earnings & Wallet 💰</h1>
-                <p class="page-subtitle">Track your earnings and payment history</p>
+            <div class="page-header flex-between">
+                <div>
+                    <a href="/freelancer/dashboard" class="text-muted text-sm"
+                        style="display:inline-flex;align-items:center;gap:4px;margin-bottom:8px;">← Back to
+                        Dashboard</a>
+                    <h1 class="page-title">💰 Wallet & Earnings</h1>
+                    <p class="page-subtitle">Manage your funds, track earnings, and request payouts</p>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="openModal('withdrawModal')" class="btn btn-ghost">↗ Withdraw</button>
+                    <button onclick="openModal('addFundsModal')" class="btn btn-primary">➕ Add Funds</button>
+                </div>
             </div>
 
-            <div class="grid grid-2 mb-4">
-                <div class="wallet-box">
-                    <div class="wallet-label">💰 Total Earnings</div>
-                    <div class="wallet-amount">₹<span
+            <div th:if="${success}" class="alert alert-success animate-fade-in" style="margin-top: 1.5rem;">✅ <span
+                    th:text="${success}"></span></div>
+            <div th:if="${error}" class="alert alert-error animate-fade-in" style="margin-top: 1.5rem;">⚠️ <span
+                    th:text="${error}"></span></div>
+
+            <!-- Stats Overview -->
+            <div class="grid grid-3 mb-4 mt-4">
+                <div class="wallet-card-mini primary">
+                    <div style="font-size: 0.8rem; font-weight: 600; opacity: 0.8;">CURRENT BALANCE</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Space Grotesk';">₹<span
                             th:text="${#numbers.formatDecimal(user.walletBalance, 1, 2)}">0.00</span></div>
-                    <div class="text-sm mt-2" style="opacity:0.75;">After 5% Talentrock commission deduction</div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">Available for payments & withdrawals</div>
                 </div>
+                <div class="wallet-card-mini secondary">
+                    <div style="font-size: 0.8rem; font-weight: 600; opacity: 0.8;">TOTAL EARNINGS</div>
+                    <div style="font-size: 2.2rem; font-weight: 800; font-family: 'Space Grotesk';">₹<span
+                            th:text="${#numbers.formatDecimal(totalEarnings, 1, 0)}">0</span></div>
+                    <div style="font-size: 0.75rem; opacity: 0.7;">Life-time project revenue</div>
+                </div>
+                <div class="wallet-card-mini">
+                    <div style="font-size: 0.8rem; font-weight: 600; color: var(--text-muted);">TOTAL WITHDRAWN</div>
+                    <div
+                        style="font-size: 2.2rem; font-weight: 800; font-family: 'Space Grotesk'; color: var(--accent);">
+                        ₹<span th:text="${#numbers.formatDecimal(totalWithdrawals, 1, 0)}">0</span></div>
+                    <div style="font-size: 0.75rem; color: var(--text-muted);">Payouts to your bank account</div>
+                </div>
+            </div>
+
+            <div class="grid" style="grid-template-columns: 2fr 1fr; gap: 1.5rem;">
+                <!-- Transaction History -->
                 <div class="card">
-                    <div class="card-body flex-center" style="flex-direction:column; gap:0.5rem; height:100%;">
-                        <div style="font-size:3rem;">📦</div>
-                        <div style="font-weight:700; font-size:1.2rem;"
-                            th:text="${user.completedProjects != null ? user.completedProjects : 0}">0</div>
-                        <div class="text-muted text-sm">Completed Projects</div>
-                        <div style="color:var(--primary-light); font-size:0.85rem; margin-top:0.5rem;">Performance:
-                            <span
-                                th:text="${user.performanceScore != null ? user.performanceScore + '/10' : '5.0/10'}">5.0/10</span>
+                    <div class="card-header flex-between">
+                        <span>📊 Transaction History</span>
+                    </div>
+                    <div class="card-body" style="padding: 0;">
+                        <div th:if="${transactions == null or transactions.isEmpty()}"
+                            style="padding: 4rem; text-align: center; color: var(--text-muted);">
+                            <div style="font-size: 3rem; margin-bottom: 1rem; opacity: 0.2;">💸</div>
+                            <p>No transactions found.</p>
+                        </div>
+                        <div th:if="${transactions != null and !transactions.isEmpty()}" class="table-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Details</th>
+                                        <th>Date & Time</th>
+                                        <th>Type</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="tx : ${transactions}">
+                                        <td>
+                                            <div style="font-weight: 600;" th:text="${tx.description}">Payment for
+                                                Project</div>
+                                            <div class="text-xs text-muted mt-1"
+                                                th:text="${'TXN-' + tx.id + '00' + tx.id}">TXN-123456</div>
+                                        </td>
+                                        <td>
+                                            <div th:text="${#temporals.format(tx.createdAt, 'dd MMM yyyy')}">Date</div>
+                                            <div class="text-xs opacity-50"
+                                                th:text="${#temporals.format(tx.createdAt, 'hh:mm a')}">Time</div>
+                                        </td>
+                                        <td>
+                                            <span th:class="'transaction-type-badge type-' + ${tx.type.toLowerCase()}"
+                                                th:text="${tx.type}">Credit</span>
+                                        </td>
+                                        <td
+                                            th:style="${tx.type == 'CREDIT' ? 'color: var(--success); font-weight:700;' : 'color: var(--accent); font-weight:700;'}">
+                                            <span th:text="${tx.type == 'CREDIT' ? '+' : '-'}"></span>
+                                            ₹<span th:text="${#numbers.formatDecimal(tx.amount, 1, 2)}">0.00</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Withdrawal List -->
+                <div class="card">
+                    <div class="card-header">🏦 Recent Withdrawals</div>
+                    <div class="card-body" style="padding: 0;">
+                        <div th:if="${withdrawals == null or withdrawals.isEmpty()}"
+                            style="padding: 2rem; text-align: center; color: var(--text-muted);">
+                            <p class="text-xs">No withdrawal history.</p>
+                        </div>
+                        <div th:if="${withdrawals != null and !withdrawals.isEmpty()}" style="padding: 1rem;">
+                            <div th:each="w : ${withdrawals}"
+                                style="border-bottom: 1px solid var(--bg-border); padding: 1rem 0;">
+                                <div class="flex-between mb-1">
+                                    <span class="font-bold" th:text="${'₹' + w.amount}">₹500</span>
+                                    <span th:if="${w.status == 'PENDING'}"
+                                        class="project-badge badge-pending">Pending</span>
+                                    <span th:if="${w.status == 'APPROVED'}"
+                                        class="project-badge badge-accepted">Approved</span>
+                                    <span th:if="${w.status == 'REJECTED'}"
+                                        class="project-badge badge-cancelled">Rejected</span>
+                                </div>
+                                <div class="text-xs text-muted" th:text="${w.bankName + ' • ' + w.accountNumber}">HDFC •
+                                    ****1234</div>
+                                <div class="text-xs text-muted" style="opacity: 0.6; margin-top: 4px;"
+                                    th:text="${#temporals.format(w.createdAt, 'dd MMM, hh:mm a')}">Date</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="card">
-                <div class="card-body text-center" style="padding:3rem; color:var(--text-muted);">
-                    <div style="font-size:3rem; margin-bottom:1rem;">📊</div>
-                    <p>Complete milestones to earn payments. Earnings will appear here automatically when clients
-                        approve your milestones.</p>
+            <!-- MODAL: Add Funds -->
+            <div id="addFundsModal" class="modal">
+                <div class="modal-content">
+                    <span class="close-modal" onclick="closeModal('addFundsModal')">&times;</span>
+
+                    <div id="payment-step-1">
+                        <h2 style="margin-bottom: 0.5rem;">Add Funds 💳</h2>
+                        <p class="text-muted text-sm mb-4">Recharge your wallet instantly for bid upgrades or Elite
+                            plans.</p>
+
+                        <div class="form-group">
+                            <label class="form-label">Amount (₹) *</label>
+                            <input type="number" id="fundsAmount" class="form-control"
+                                placeholder="Enter amount (min. ₹100)" min="100" />
+                        </div>
+
+                        <label class="form-label mt-3 mb-2">Select Payment Method</label>
+                        <div class="payment-method-card active" onclick="selectMethod(this, 'UPI')">
+                            <input type="radio" value="UPI" checked />
+                            <div style="font-size: 1.5rem;">📱</div>
+                            <div>
+                                <div style="font-weight: 600;">UPI (GPay, PhonePe, Paytm)</div>
+                                <div class="text-xs text-muted">Instant processing</div>
+                            </div>
+                        </div>
+                        <div class="payment-method-card" onclick="selectMethod(this, 'CARD')">
+                            <input type="radio" value="CARD" />
+                            <div style="font-size: 1.5rem;">💳</div>
+                            <div>
+                                <div style="font-weight: 600;">Debit / Credit Card</div>
+                                <div class="text-xs text-muted">Visa, Mastercard, RuPay</div>
+                            </div>
+                        </div>
+
+                        <div id="upiInput" class="form-group mt-3">
+                            <label class="form-label">UPI ID / VPA</label>
+                            <input type="text" id="upiIdValue" class="form-control" placeholder="yourname@okaxis" />
+                        </div>
+
+                        <button type="button" onclick="showConfirmation()" class="btn btn-primary w-100 mt-4">Review
+                            Payment →</button>
+                    </div>
+
+                    <!-- STEP 2: Confirmation -->
+                    <div id="payment-step-2" style="display: none; text-align: center;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🔒</div>
+                        <h2 style="margin-bottom: 0.5rem;">Confirm Payment</h2>
+                        <p class="text-muted text-sm mb-4">Please review your transaction details</p>
+
+                        <div
+                            style="background: var(--bg-surface); padding: 1.5rem; border-radius: 16px; text-align: left; margin-bottom: 2rem;">
+                            <div class="flex-between mb-2">
+                                <span class="text-sm text-muted">Amount:</span>
+                                <span class="font-bold" id="conf-amount">₹0.00</span>
+                            </div>
+                            <div class="flex-between mb-2">
+                                <span class="text-sm text-muted">Method:</span>
+                                <span class="font-bold" id="conf-method">UPI</span>
+                            </div>
+                            <div class="flex-between" id="conf-upi-row">
+                                <span class="text-sm text-muted">UPI ID:</span>
+                                <span class="font-bold" id="conf-upi-id">-</span>
+                            </div>
+                        </div>
+
+                        <form action="/freelancer/wallet/add-funds" method="post">
+                            <input type="hidden" name="amount" id="form-amount" />
+                            <input type="hidden" name="paymentMethod" id="form-method" />
+                            <input type="hidden" name="upiId" id="form-upi-id" />
+
+                            <div class="flex gap-2">
+                                <button type="button" onclick="backToStep1()" class="btn btn-ghost"
+                                    style="flex: 1;">Cancel</button>
+                                <button type="submit" class="btn btn-success" style="flex: 2;">Confirm & Pay
+                                    Securely</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MODAL: Withdraw -->
+            <div id="withdrawModal" class="modal">
+                <div class="modal-content" style="max-width: 600px;">
+                    <span class="close-modal" onclick="closeModal('withdrawModal')">&times;</span>
+                    <h2>Request Payout ↗</h2>
+                    <p class="text-muted text-sm mb-4">Funds will be credited to your bank account within 24-48 hours.
+                    </p>
+
+                    <form action="/freelancer/wallet/withdraw" method="post">
+                        <div class="grid grid-2" style="gap: 1.25rem;">
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label class="form-label">Amount to Withdraw (₹) *</label>
+                                <input type="number" name="amount" class="form-control" th:max="${user.walletBalance}"
+                                    placeholder="500" required />
+                                <div class="text-xs mt-1 text-muted">Available: ₹<span
+                                        th:text="${user.walletBalance}"></span></div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Account Holder Name *</label>
+                                <input type="text" name="accountName" class="form-control" placeholder="Full Name"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Account Number *</label>
+                                <input type="text" name="accountNumber" class="form-control" placeholder="1234567890"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Bank Name *</label>
+                                <input type="text" name="bankName" class="form-control" placeholder="e.g. HDFC Bank"
+                                    required />
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">IFSC Code *</label>
+                                <input type="text" name="ifscCode" class="form-control" placeholder="HDFC0001234"
+                                    required />
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-4">Submit Withdrawal Request ↗</button>
+                    </form>
                 </div>
             </div>
         </main>
     </div>
+
+    <script>
+        let currentMethod = 'UPI';
+
+        function openModal(id) {
+            document.getElementById(id).style.display = 'flex';
+            if (id === 'addFundsModal') backToStep1();
+        }
+        function closeModal(id) {
+            document.getElementById(id).style.display = 'none';
+        }
+        function selectMethod(el, method) {
+            document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('active'));
+            el.classList.add('active');
+            el.querySelector('input').checked = true;
+            currentMethod = method;
+
+            const upiInput = document.getElementById('upiInput');
+            upiInput.style.display = method === 'UPI' ? 'block' : 'none';
+        }
+
+        function showConfirmation() {
+            const amount = document.getElementById('fundsAmount').value;
+            if (!amount || amount < 100) {
+                alert('Please enter a valid amount (min ₹100)');
+                return;
+            }
+
+            document.getElementById('payment-step-1').style.display = 'none';
+            document.getElementById('payment-step-2').style.display = 'block';
+
+            document.getElementById('conf-amount').textContent = '₹' + amount;
+            document.getElementById('conf-method').textContent = currentMethod;
+
+            const upiId = document.getElementById('upiIdValue').value;
+            if (currentMethod === 'UPI') {
+                document.getElementById('conf-upi-row').style.display = 'flex';
+                document.getElementById('conf-upi-id').textContent = upiId || 'Not provided';
+            } else {
+                document.getElementById('conf-upi-row').style.display = 'none';
+            }
+
+            // Fill hidden form
+            document.getElementById('form-amount').value = amount;
+            document.getElementById('form-method').value = currentMethod;
+            document.getElementById('form-upi-id').value = upiId;
+        }
+
+        function backToStep1() {
+            document.getElementById('payment-step-1').style.display = 'block';
+            document.getElementById('payment-step-2').style.display = 'none';
+        }
+
+        // Close modal on click outside
+        window.onclick = function (event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+    </script>
 </body>
 
 </html>

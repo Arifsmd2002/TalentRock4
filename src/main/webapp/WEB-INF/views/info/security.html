@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{info/base :: head}"></head>
+
+<body>
+    <nav th:replace="~{info/base :: nav}"></nav>
+    <div class="info-container">
+        <div class="info-header">
+            <span class="section-tag">Trust & Safety</span>
+            <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;" th:text="${title}">Security</h1>
+            <p style="font-size:1.1rem; color:var(--text-secondary); max-width:700px; margin:0 auto;">
+                Your data and payments are protected by enterprise-grade security.
+            </p>
+        </div>
+
+        <div class="info-content">
+            <h2>Data Protection</h2>
+            <p>We use SSL/TLS encryption for all data in transit. Your personal information, project details, and
+                communication are encrypted and stored securely.</p>
+
+            <div class="gradient-box">
+                <strong>AES-256 Encryption:</strong> All sensitive data including payment tokens are stored using
+                industry-standard AES-256 encryption.
+            </div>
+
+            <h2>Secure Payments</h2>
+            <p>Talentrock uses a multi-layered approach to payment security:</p>
+            <ul>
+                <li><strong>Secured Escrow:</strong> Funds are held in a secure virtual wallet until milestones are
+                    approved.</li>
+                <li><strong>Fraud Detection:</strong> AI-powered algorithms monitor transactions for suspicious
+                    activity.</li>
+                <li><strong>Verified Profiles:</strong> We verify the identity of our top-tier freelancers to ensure
+                    trust.</li>
+            </ul>
+
+            <h2>System Reliability</h2>
+            <p>Our infrastructure is hosted on secure cloud providers with 99.9% uptime guarantee. Continuous monitoring
+                ensures that the platform is always available when you need it.</p>
+
+            <h2>Reporting Vulnerabilities</h2>
+            <p>If you discover a security vulnerability, please contact our security team immediately at
+                security@talentrock.com. We operate a bug bounty program for responsible disclosure.</p>
+        </div>
+    </div>
+    <div th:replace="~{fragments/footer :: footer}"></div>
+</body>
+
+</html>
