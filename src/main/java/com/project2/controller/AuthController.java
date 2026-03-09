@@ -91,9 +91,8 @@ public class AuthController {
     @PostMapping("/forgot-password")
     public String processForgotPassword(@RequestParam String email, RedirectAttributes redirectAttrs) {
         try {
-            userService.createPasswordResetToken(email);
-            redirectAttrs.addFlashAttribute("success", "Password reset link has been sent to your email.");
-            return "redirect:/forgot-password";
+            userService.createPasswordResetOtp(email);
+            return "redirect:/verify-reset-otp?email=" + email;
         } catch (Exception e) {
             String errorMessage = e.getMessage();
             if (errorMessage != null && (errorMessage.contains("Authentication failed") || errorMessage.contains("Username and Password not accepted"))) {
@@ -104,26 +103,45 @@ public class AuthController {
         }
     }
 
+    @GetMapping("/verify-reset-otp")
+    public String verifyResetOtpPage(@RequestParam String email, Model model) {
+        model.addAttribute("email", email);
+        return "auth/verify-reset-otp";
+    }
+
+    @PostMapping("/verify-reset-otp")
+    public String processVerifyResetOtp(@RequestParam String email,
+                                      @RequestParam String otp,
+                                      RedirectAttributes redirectAttrs) {
+        if (userService.verifyPasswordResetOtp(email, otp)) {
+            return "redirect:/reset-password?email=" + email + "&token=" + otp;
+        } else {
+            redirectAttrs.addFlashAttribute("error", "Invalid or expired OTP.");
+            return "redirect:/verify-reset-otp?email=" + email;
+        }
+    }
+
     @GetMapping("/reset-password")
-    public String resetPasswordPage(@RequestParam String token, Model model) {
-        return userService.validatePasswordResetToken(token)
-                .map(user -> {
-                    model.addAttribute("token", token);
-                    return "auth/reset-password";
-                })
-                .orElse("redirect:/login?error=invalid-token");
+    public String resetPasswordPage(@RequestParam String email, @RequestParam String token, Model model) {
+        if (userService.verifyPasswordResetOtp(email, token)) {
+            model.addAttribute("email", email);
+            model.addAttribute("token", token);
+            return "auth/reset-password";
+        }
+        return "redirect:/login?error=invalid-token";
     }
 
     @PostMapping("/reset-password")
-    public String processResetPassword(@RequestParam String token,
-            @RequestParam String password,
-            RedirectAttributes redirectAttrs) {
-        return userService.validatePasswordResetToken(token)
-                .map(user -> {
-                    userService.resetPassword(user, password);
-                    redirectAttrs.addFlashAttribute("success", "Password successfully reset. Please login.");
-                    return "redirect:/login";
-                })
-                .orElse("redirect:/login?error=invalid-token");
+    public String processResetPassword(@RequestParam String email,
+                                     @RequestParam String token,
+                                     @RequestParam String password,
+                                     RedirectAttributes redirectAttrs) {
+        if (userService.verifyPasswordResetOtp(email, token)) {
+            User user = userService.validatePasswordResetToken(token).orElseThrow();
+            userService.resetPassword(user, password);
+            redirectAttrs.addFlashAttribute("message", "Password successfully reset. Please login.");
+            return "redirect:/login";
+        }
+        return "redirect:/login?error=invalid-token";
     }
 }

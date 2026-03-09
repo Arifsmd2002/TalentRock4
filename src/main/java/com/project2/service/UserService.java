@@ -194,17 +194,27 @@ public class UserService {
     }
 
     @Transactional
-    public String createPasswordResetToken(String email) {
+    public String createPasswordResetOtp(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
 
-        String token = java.util.UUID.randomUUID().toString();
-        user.setResetToken(token);
+        // Generate 6-digit OTP
+        String otp = String.format("%06d", new java.util.Random().nextInt(999999));
+        user.setResetToken(otp); // Using resetToken field for OTP
         user.setResetTokenExpiry(java.time.LocalDateTime.now().plusHours(1));
         userRepository.save(user);
 
-        emailService.sendPasswordResetEmail(user, token);
-        return token;
+        emailService.sendPasswordResetEmail(user, otp);
+        return otp;
+    }
+
+    public boolean verifyPasswordResetOtp(String email, String otp) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        return user.getResetToken() != null &&
+               user.getResetToken().equals(otp) &&
+               user.getResetTokenExpiry().isAfter(java.time.LocalDateTime.now());
     }
 
     public Optional<User> validatePasswordResetToken(String token) {

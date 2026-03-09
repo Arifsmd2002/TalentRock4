@@ -83,19 +83,18 @@ public class EmailService {
         sendHtmlEmail(email, subject, content);
     }
 
-    public void sendPasswordResetEmail(User user, String token) {
-        String resetUrl = "http://localhost:8080/reset-password?token=" + token;
-        String subject = "Password Reset Request - TalentRock";
+    public void sendPasswordResetEmail(User user, String otp) {
+        String subject = "Password Reset OTP - TalentRock";
         String content = "<html>" +
                 "<body style='font-family: Arial, sans-serif; line-height: 1.6; color: #333;'>" +
-                "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #fff;'>" +
+                "<div style='max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px; background-color: #f9f9f9;'>" +
                 "<h2 style='color: #dc3545; text-align: center;'>Reset Your Password</h2>" +
                 "<p>Hi <strong>" + user.getFullName() + "</strong>,</p>" +
-                "<p>We received a request to reset the password for your TalentRock account. Click the button below to set a new password:</p>" +
-                "<div style='text-align: center; margin: 30px 0;'>" +
-                "<a href='" + resetUrl + "' style='background-color: #dc3545; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>Reset Password</a>" +
+                "<p>We received a request to reset the password for your TalentRock account. Please use the following 6-digit verification code to proceed:</p>" +
+                "<div style='background-color: #fff; padding: 20px; text-align: center; border-radius: 5px; border: 1px dashed #dc3545; margin: 20px 0;'>" +
+                "<h1 style='color: #dc3545; letter-spacing: 5px; margin: 0;'>" + otp + "</h1>" +
                 "</div>" +
-                "<p>If you didn't request a password reset, you can safely ignore this email. This link will expire in 1 hour.</p>" +
+                "<p>This code will expire in 1 hour. If you didn't request a password reset, you can safely ignore this email.</p>" +
                 "<p style='margin-top: 30px; font-size: 0.9em; color: #777;'>Best regards,<br>The TalentRock Team</p>" +
                 "</div>" +
                 "</body>" +

@@ -4,9 +4,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Forgot Password | Talentrock</title>
+    <title>Verify OTP | Talentrock</title>
     <link rel="stylesheet" th:href="@{/css/style.css}" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
 </head>
 
 <body style="display:flex; align-items:center; justify-content:center; min-height:100vh; background: var(--bg-base);">
@@ -23,31 +22,28 @@
 
     <div style="position:relative; z-index:1; width:100%; max-width:440px; padding:2rem;">
         <div class="text-center mb-4">
-            <a href="/" class="navbar-brand" style="justify-content:center; font-size:2rem; display:flex;">
-                <img th:src="@{/images/logo.png}" alt="Logo" style="width:48px;height:48px;border-radius:14px;">
-                Talentrock
-            </a>
-            <h2 class="mt-4" style="font-size:1.4rem; color: var(--text-base);">Reset Your Password</h2>
-            <p class="text-secondary-color mt-2" style="font-size:0.95rem;">Enter your email to receive an OTP</p>
+            <h2 style="font-size:1.4rem; color: var(--text-base);">Verify OTP</h2>
+            <p class="text-secondary-color mt-2" style="font-size:0.95rem;">Please enter the 6-digit code sent to your
+                email.</p>
         </div>
 
         <div class="card">
             <div class="card-body">
                 <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
-                <div th:if="${success}" class="alert alert-success">✅ <span th:text="${success}"></span></div>
 
-                <form th:action="@{/forgot-password}" method="post">
+                <form th:action="@{/verify-reset-otp}" method="post">
+                    <input type="hidden" name="email" th:value="${email}" />
                     <div class="form-group">
-                        <label class="form-label">Email Address</label>
-                        <input type="email" name="email" class="form-control" placeholder="Enter your registered email"
-                            required />
+                        <label class="form-label">OTP Code</label>
+                        <input type="text" name="otp" class="form-control" placeholder="X X X X X X" required
+                            maxlength="6" />
                     </div>
-                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Send OTP
-                        📧</button>
+                    <button type="submit" class="btn btn-primary" style="width:100%; margin-top:0.5rem;">Verify
+                        Code</button>
                 </form>
 
                 <div class="text-center mt-3">
-                    <a href="/login" class="text-primary-color text-sm font-semibold">Back to Login</a>
+                    <a th:href="@{/forgot-password}" class="text-primary-color text-sm font-semibold">Change Email</a>
                 </div>
             </div>
         </div>
