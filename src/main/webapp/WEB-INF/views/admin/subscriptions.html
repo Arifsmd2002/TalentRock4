@@ -21,7 +21,7 @@
             </div>
 
             <!-- Stats -->
-            <div class="grid grid-4 mb-4">
+            <div class="grid grid-5 mb-4">
                 <div class="stat-card">
                     <div class="stat-icon purple">💳</div>
                     <div>
@@ -37,10 +37,20 @@
                     </div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-icon teal">🚀</div>
+                    <div class="stat-icon teal" style="background:none;">
+                        <img th:src="@{/images/logo.png}" alt="Logo"
+                            style="width:28px; height:28px; border-radius:6px;">
+                    </div>
                     <div>
-                        <div class="stat-value" th:text="${growthCount + proCount}">0</div>
-                        <div class="stat-label">Growth + Pro Plans</div>
+                        <div class="stat-value" th:text="${growthCount}">0</div>
+                        <div class="stat-label">Growth Plans</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon gold">🥈</div>
+                    <div>
+                        <div class="stat-value" th:text="${proCount}">0</div>
+                        <div class="stat-label">Pro Plans</div>
                     </div>
                 </div>
                 <div class="stat-card">
@@ -84,7 +94,9 @@
                                             style="background:rgba(100,116,139,0.15);color:#94a3b8;border:1px solid rgba(100,116,139,0.2);padding:0.2rem 0.6rem;border-radius:999px;font-size:0.76rem;font-weight:700;">🆓
                                             Free</span>
                                         <span th:case="'GROWTH'"
-                                            style="background:rgba(6,182,212,0.12);color:#22d3ee;border:1px solid rgba(6,182,212,0.2);padding:0.2rem 0.6rem;border-radius:999px;font-size:0.76rem;font-weight:700;">🚀
+                                            style="background:rgba(6,182,212,0.12);color:#22d3ee;border:1px solid rgba(6,182,212,0.2);padding:0.2rem 0.6rem;border-radius:999px;font-size:0.76rem;font-weight:700;display:inline-flex;align-items:center;gap:4px;">
+                                            <img th:src="@{/images/logo.png}" alt="Logo"
+                                                style="width:14px; height:14px; border-radius:3px;">
                                             Growth</span>
                                         <span th:case="'PRO'"
                                             style="background:rgba(99,102,241,0.15);color:#818cf8;border:1px solid rgba(99,102,241,0.25);padding:0.2rem 0.6rem;border-radius:999px;font-size:0.76rem;font-weight:700;">⚡

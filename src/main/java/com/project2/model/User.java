@@ -29,6 +29,8 @@ public class User {
 
     private String fullName;
     private String phone;
+    @Lob
+    @Column(columnDefinition = "LONGTEXT")
     private String profilePicture;
 
     @Column(columnDefinition = "TEXT")
@@ -37,6 +39,7 @@ public class User {
     private String skills;
     private String category;
     private String location;
+    private String address;
 
     @Column(precision = 10, scale = 2)
     private java.math.BigDecimal walletBalance = java.math.BigDecimal.ZERO;
@@ -53,9 +56,14 @@ public class User {
     private Boolean isActive = true;
     private Boolean isVerified = false;
 
-    @Column(updatable = false)
     private java.time.LocalDateTime createdAt;
     private java.time.LocalDateTime updatedAt;
+
+    private String resetToken;
+    private java.time.LocalDateTime resetTokenExpiry;
+
+    private String otpCode;
+    private java.time.LocalDateTime otpExpiry;
 
     @OneToMany(mappedBy = "client", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Project> postedProjects;
@@ -166,6 +174,14 @@ public class User {
         this.location = location;
     }
 
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
     public java.math.BigDecimal getWalletBalance() {
         return walletBalance;
     }
@@ -260,5 +276,37 @@ public class User {
 
     public void setBids(List<Bid> bids) {
         this.bids = bids;
+    }
+
+    public String getResetToken() {
+        return resetToken;
+    }
+
+    public void setResetToken(String resetToken) {
+        this.resetToken = resetToken;
+    }
+
+    public java.time.LocalDateTime getResetTokenExpiry() {
+        return resetTokenExpiry;
+    }
+
+    public void setResetTokenExpiry(java.time.LocalDateTime resetTokenExpiry) {
+        this.resetTokenExpiry = resetTokenExpiry;
+    }
+
+    public String getOtpCode() {
+        return otpCode;
+    }
+
+    public void setOtpCode(String otpCode) {
+        this.otpCode = otpCode;
+    }
+
+    public java.time.LocalDateTime getOtpExpiry() {
+        return otpExpiry;
+    }
+
+    public void setOtpExpiry(java.time.LocalDateTime otpExpiry) {
+        this.otpExpiry = otpExpiry;
     }
 }

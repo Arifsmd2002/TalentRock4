@@ -18,13 +18,15 @@ public class UserService {
     private final WalletTransactionRepository walletTransactionRepository;
     private final WithdrawalRepository withdrawalRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public UserService(UserRepository userRepository, WalletTransactionRepository walletTransactionRepository,
-            WithdrawalRepository withdrawalRepository, PasswordEncoder passwordEncoder) {
+            WithdrawalRepository withdrawalRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.walletTransactionRepository = walletTransactionRepository;
         this.withdrawalRepository = withdrawalRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Transactional
@@ -35,6 +37,9 @@ public class UserService {
         if (userRepository.existsByEmail(user.getEmail())) {
             throw new RuntimeException("Email already registered");
         }
+        if (user.getPassword() == null || user.getPassword().length() < 6) {
+            throw new RuntimeException("Password must be at least 6 characters");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         if (user.getWalletBalance() == null) {
             user.setWalletBalance(BigDecimal.ZERO);
@@ -42,7 +47,48 @@ public class UserService {
         if (user.getPerformanceScore() == null) {
             user.setPerformanceScore(5.0);
         }
-        return userRepository.save(user);
+        user.setIsVerified(false);
+        user.setIsActive(false); // Only activate after verification
+
+        // Generate 6-digit OTP
+        String otp = String.format("%06d", new java.util.Random().nextInt(999999));
+        user.setOtpCode(otp);
+        user.setOtpExpiry(java.time.LocalDateTime.now().plusMinutes(5));
+
+        User savedUser = userRepository.save(user);
+        try {
+            emailService.sendOtpEmail(savedUser.getEmail(), otp);
+        } catch (Exception e) {
+            // Rethrow to be caught by AuthController
+            throw new RuntimeException("Account saved but failed to send verification email: " + e.getMessage());
+        }
+        return savedUser;
+    }
+
+    @Transactional
+    public boolean verifyOtp(String username, String otpCode) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        if (user.getOtpCode() != null && user.getOtpCode().equals(otpCode) &&
+                user.getOtpExpiry().isAfter(java.time.LocalDateTime.now())) {
+
+            user.setIsVerified(true);
+            user.setIsActive(true);
+            user.setOtpCode(null);
+            user.setOtpExpiry(null);
+            userRepository.save(user);
+
+            // Send successful registration emails now
+            try {
+                emailService.sendWelcomeEmail(user);
+                emailService.sendAdminRegistrationNotification(user);
+            } catch (Exception e) {
+                System.err.println("Failed to send post-verification emails: " + e.getMessage());
+            }
+            return true;
+        }
+        return false;
     }
 
     public Optional<User> findByUsername(String username) {
@@ -145,5 +191,38 @@ public class UserService {
 
     public List<WalletTransaction> getWalletTransactions(User user) {
         return walletTransactionRepository.findByUserOrderByCreatedAtDesc(user);
+    }
+
+    @Transactional
+    public String createPasswordResetToken(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        String token = java.util.UUID.randomUUID().toString();
+        user.setResetToken(token);
+        user.setResetTokenExpiry(java.time.LocalDateTime.now().plusHours(1));
+        userRepository.save(user);
+
+        emailService.sendPasswordResetEmail(user, token);
+        return token;
+    }
+
+    public Optional<User> validatePasswordResetToken(String token) {
+        return userRepository.findByResetToken(token)
+                .filter(user -> user.getResetTokenExpiry().isAfter(java.time.LocalDateTime.now()));
+    }
+
+    @Transactional
+    public void resetPassword(User user, String newPassword) {
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetToken(null);
+        user.setResetTokenExpiry(null);
+        userRepository.save(user);
+    }
+
+    @Transactional
+    public void updateProfilePicture(User user, String base64Image) {
+        user.setProfilePicture(base64Image);
+        userRepository.save(user);
     }
 }

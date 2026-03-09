@@ -23,68 +23,87 @@
 
             <!-- Stats Grid -->
             <div class="grid grid-4 mb-4">
-                <div class="stat-card">
+                <a href="/admin/users" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon purple">👥</div>
                     <div>
                         <div class="stat-value" th:text="${totalUsers}">0</div>
                         <div class="stat-label">Total Users</div>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/admin/users?role=CLIENT" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon teal">💼</div>
                     <div>
                         <div class="stat-value" th:text="${totalClients}">0</div>
                         <div class="stat-label">Clients</div>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/admin/users?role=FREELANCER" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon gold">🎨</div>
                     <div>
                         <div class="stat-value" th:text="${totalFreelancers}">0</div>
                         <div class="stat-label">Freelancers</div>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/admin/projects" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon green">📂</div>
                     <div>
                         <div class="stat-value" th:text="${totalProjects}">0</div>
                         <div class="stat-label">Total Projects</div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Subscription Stats -->
-            <div class="grid grid-4 mb-4">
-                <div class="stat-card">
+            <div class="grid grid-5 mb-4">
+                <a href="/admin/subscriptions" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon purple">💳</div>
                     <div>
                         <div class="stat-value" th:text="${activeSubscriptions != null ? activeSubscriptions : 0}">0
                         </div>
                         <div class="stat-label">Active Subscriptions</div>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/admin/subscriptions" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon green">💰</div>
                     <div>
                         <div class="stat-value" th:text="${monthlyRevenue != null ? '₹' + monthlyRevenue : '₹0'}">₹0
                         </div>
                         <div class="stat-label">Monthly Revenue</div>
                     </div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-icon teal">🚀</div>
+                </a>
+                <a href="/admin/subscriptions" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <div class="stat-icon teal" style="background:none;">
+                        <img th:src="@{/images/logo.png}" alt="Logo"
+                            style="width:28px; height:28px; border-radius:6px;">
+                    </div>
                     <div>
                         <div class="stat-value" th:text="${growthCount != null ? growthCount : 0}">0</div>
                         <div class="stat-label">Growth Plans</div>
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/admin/subscriptions" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <div class="stat-icon gold">🥈</div>
+                    <div>
+                        <div class="stat-value" th:text="${proCount != null ? proCount : 0}">0</div>
+                        <div class="stat-label">Pro Plans</div>
+                    </div>
+                </a>
+                <a href="/admin/subscriptions" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon gold">👑</div>
                     <div>
                         <div class="stat-value" th:text="${eliteCount != null ? eliteCount : 0}">0</div>
                         <div class="stat-label">Elite Plans</div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Second Row Stats -->

@@ -48,6 +48,28 @@ public class ClientController {
         return "client/dashboard";
     }
 
+    @GetMapping("/projects")
+    public String myProjects(@RequestParam(required = false) String status, Authentication auth, Model model) {
+        User client = getCurrentUser(auth);
+        List<Project> projects = projectService.findByClient(client);
+
+        if (status != null && !status.equalsIgnoreCase("ALL")) {
+            try {
+                ProjectStatus projectStatus = ProjectStatus.valueOf(status.toUpperCase());
+                projects = projects.stream()
+                        .filter(p -> p.getStatus() == projectStatus)
+                        .toList();
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid status
+            }
+        }
+
+        model.addAttribute("user", client);
+        model.addAttribute("projects", projects);
+        model.addAttribute("currentStatus", status != null ? status : "ALL");
+        return "client/projects";
+    }
+
     @GetMapping("/post-project")
     public String postProjectPage(Authentication auth, Model model) {
         model.addAttribute("user", getCurrentUser(auth));
@@ -194,5 +216,13 @@ public class ClientController {
         userService.save(user);
         redirectAttrs.addFlashAttribute("success", "Profile updated!");
         return "redirect:/client/profile";
+    }
+
+    @PostMapping("/profile/update-photo")
+    @ResponseBody
+    public String updatePhoto(@RequestBody String base64Image, Authentication auth) {
+        User client = getCurrentUser(auth);
+        userService.updateProfilePicture(client, base64Image);
+        return "Photo updated successfully";
     }
 }

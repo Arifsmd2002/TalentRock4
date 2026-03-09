@@ -45,6 +45,9 @@ public class FreelancerController {
         model.addAttribute("user", freelancer);
         model.addAttribute("myBids", myBids);
         model.addAttribute("activeProjects", activeProjects);
+        model.addAttribute("totalProjects", activeProjects.size());
+        model.addAttribute("inProgressCount", activeProjects.stream().filter(p -> p.getStatus() == ProjectStatus.IN_PROGRESS).count());
+        model.addAttribute("completedCount", activeProjects.stream().filter(p -> p.getStatus() == ProjectStatus.COMPLETED).count());
         model.addAttribute("pendingBids", myBids.stream().filter(b -> b.getStatus() == BidStatus.PENDING).count());
         model.addAttribute("acceptedBids", myBids.stream().filter(b -> b.getStatus() == BidStatus.ACCEPTED).count());
 
@@ -54,6 +57,28 @@ public class FreelancerController {
         model.addAttribute("remainingBids", subscriptionService.getRemainingBids(freelancer));
 
         return "freelancer/dashboard";
+    }
+
+    @GetMapping("/projects")
+    public String myProjects(@RequestParam(required = false) String status, Authentication auth, Model model) {
+        User freelancer = getCurrentUser(auth);
+        List<Project> projects = projectService.findByFreelancer(freelancer);
+
+        if (status != null && !status.equalsIgnoreCase("ALL")) {
+            try {
+                ProjectStatus projectStatus = ProjectStatus.valueOf(status.toUpperCase());
+                projects = projects.stream()
+                        .filter(p -> p.getStatus() == projectStatus)
+                        .toList();
+            } catch (IllegalArgumentException e) {
+                // Ignore invalid status
+            }
+        }
+
+        model.addAttribute("user", freelancer);
+        model.addAttribute("projects", projects);
+        model.addAttribute("currentStatus", status != null ? status : "ALL");
+        return "freelancer/projects";
     }
 
     @GetMapping("/browse")
@@ -216,5 +241,13 @@ public class FreelancerController {
         userService.save(user);
         redirectAttrs.addFlashAttribute("success", "Profile updated!");
         return "redirect:/freelancer/profile";
+    }
+
+    @PostMapping("/profile/update-photo")
+    @ResponseBody
+    public String updatePhoto(@RequestBody String base64Image, Authentication auth) {
+        User freelancer = getCurrentUser(auth);
+        userService.updateProfilePicture(freelancer, base64Image);
+        return "Photo updated successfully";
     }
 }

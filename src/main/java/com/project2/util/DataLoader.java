@@ -33,6 +33,8 @@ public class DataLoader implements CommandLineRunner {
                         admin.setPassword(passwordEncoder.encode("admin123"));
                         admin.setRole(Role.ADMIN);
                         admin.setFullName("Platform Admin");
+                        admin.setIsVerified(true);
+                        admin.setIsActive(true);
                         userRepository.save(admin);
                 }
 

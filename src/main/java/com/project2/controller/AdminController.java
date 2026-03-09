@@ -42,6 +42,7 @@ public class AdminController {
         model.addAttribute("activeSubscriptions", subscriptionService.countActive());
         model.addAttribute("monthlyRevenue", subscriptionService.monthlyRevenue());
         model.addAttribute("growthCount", subscriptionService.countByPlan(SubscriptionPlan.GROWTH));
+        model.addAttribute("proCount", subscriptionService.countByPlan(SubscriptionPlan.PRO));
         model.addAttribute("eliteCount", subscriptionService.countByPlan(SubscriptionPlan.ELITE));
         // Unread contact messages badge
         model.addAttribute("unreadMessages", notificationService.countUnreadContactMessages());

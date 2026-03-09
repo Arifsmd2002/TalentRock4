@@ -2,6 +2,9 @@ package com.project2.service;
 
 import com.project2.model.*;
 import com.project2.repository.*;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -13,13 +16,19 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final UserRepository userRepository;
     private final ContactMessageRepository contactMessageRepository;
+    private final JavaMailSender mailSender;
+
+    @Value("${admin.email}")
+    private String adminEmail;
 
     public NotificationService(NotificationRepository notificationRepository,
             UserRepository userRepository,
-            ContactMessageRepository contactMessageRepository) {
+            ContactMessageRepository contactMessageRepository,
+            JavaMailSender mailSender) {
         this.notificationRepository = notificationRepository;
         this.userRepository = userRepository;
         this.contactMessageRepository = contactMessageRepository;
+        this.mailSender = mailSender;
     }
 
     // ----------------------------------------------------------------
@@ -135,12 +144,37 @@ public class NotificationService {
     // CONTACT MESSAGES
     // ----------------------------------------------------------------
     @Transactional
-    public ContactMessage saveContactMessage(String name, String email, String message) {
+    public ContactMessage saveContactMessage(String name, String email, String phone, String message, Integer rating) {
         ContactMessage cm = new ContactMessage();
         cm.setSenderName(name);
         cm.setSenderEmail(email);
+        cm.setPhone(phone);
         cm.setMessage(message);
-        return contactMessageRepository.save(cm);
+        cm.setRating(rating);
+        ContactMessage saved = contactMessageRepository.save(cm);
+        
+        // Send email to admin
+        try {
+            sendEmailToAdmin(name, email, phone, message, rating);
+        } catch (Exception e) {
+            // Rethrow so UI can show the delivery failure
+            throw new RuntimeException("Message saved but email notification failed: " + e.getMessage());
+        }
+        
+        return saved;
+    }
+
+    private void sendEmailToAdmin(String name, String email, String phone, String message, Integer rating) {
+        SimpleMailMessage mail = new SimpleMailMessage();
+        mail.setTo(adminEmail);
+        mail.setSubject("📬 New Contact Inquiry from " + name);
+        mail.setText("New Contact Form Submission:\n\n" +
+                "Name: " + name + "\n" +
+                "Email: " + email + "\n" +
+                "Phone: " + (phone != null ? phone : "N/A") + "\n" +
+                "Rating: " + (rating != null ? rating + "/5" : "N/A") + "\n\n" +
+                "Message:\n" + message);
+        mailSender.send(mail);
     }
 
     public List<ContactMessage> getAllContactMessages() {

@@ -20,7 +20,7 @@
             <div class="page-header flex-between">
                 <div>
                     <h1 class="page-title">Welcome back, <span class="gradient-text"
-                            th:text="${user.fullName != null ? user.fullName : user.username}">Client</span> 👋</h1>
+                            th:text="${user.fullName != null ? user.fullName : user.username}">Client</span></h1>
                     <p class="page-subtitle">Here's your project overview for today</p>
                 </div>
                 <a href="/client/post-project" class="btn btn-primary">➕ Post New Project</a>
@@ -32,34 +32,38 @@
 
             <!-- Stats Row -->
             <div class="grid grid-4 mb-4">
-                <div class="stat-card">
+                <a href="/client/projects?status=ALL" class="stat-card" style="cursor: pointer;">
                     <div class="stat-icon purple">📂</div>
                     <div>
                         <div class="stat-value" th:text="${projects != null ? projects.size() : 0}">0</div>
                         <div class="stat-label">Total Projects</div>
+
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/client/projects?status=OPEN" class="stat-card" style="cursor: pointer;">
                     <div class="stat-icon green">🟢</div>
                     <div>
                         <div class="stat-value" th:text="${openCount}">0</div>
                         <div class="stat-label">Open Projects</div>
+
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/client/projects?status=IN_PROGRESS" class="stat-card" style="cursor: pointer;">
                     <div class="stat-icon teal">⚙️</div>
                     <div>
                         <div class="stat-value" th:text="${inProgressCount}">0</div>
                         <div class="stat-label">In Progress</div>
+
                     </div>
-                </div>
-                <div class="stat-card">
+                </a>
+                <a href="/client/projects?status=COMPLETED" class="stat-card" style="cursor: pointer;">
                     <div class="stat-icon gold">✅</div>
                     <div>
                         <div class="stat-value" th:text="${completedCount}">0</div>
                         <div class="stat-label">Completed</div>
+                        <div class="text-xs text-primary-color mt-1">View Details →</div>
                     </div>
-                </div>
+                </a>
             </div>
 
             <!-- Wallet Quick View -->
@@ -91,7 +95,7 @@
             <!-- Projects Table -->
             <div class="card">
                 <div class="card-header flex-between">
-                    <span>📋 My Projects</span>
+                    <span id="project-list-title">📋 My Projects</span>
                     <div style="display: flex; align-items: center; gap: 1rem;">
                         <!-- Notification System -->
                         <div class="notification-wrapper" style="position: relative;">
@@ -138,8 +142,17 @@
                                 <th>Action</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr th:each="project : ${projects}">
+                        <tbody id="project-table-body">
+                            <!-- Empty state row (hidden by default) -->
+                            <tr id="no-projects-row" style="display: none;">
+                                <td colspan="6" style="padding: 3rem; text-align: center; color: var(--text-muted);">
+                                    <div style="font-size: 2rem; margin-bottom: 0.5rem;">🔍</div>
+                                    No projects found for this category.
+                                </td>
+                            </tr>
+                            <tr th:each="project : ${projects}" th:attr="data-status=${project.status.name()}"
+                                style="cursor: pointer;"
+                                th:onclick="|location.href='/client/project/' + ${project.id}|">
                                 <td>
                                     <div style="font-weight:600;" th:text="${project.title}">Project Title</div>
                                     <div class="text-muted text-xs"

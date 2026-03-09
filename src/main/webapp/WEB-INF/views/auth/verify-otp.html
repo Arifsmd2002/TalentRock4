@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify OTP | Talentrox</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <style>
+        .auth-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: radial-gradient(circle at top right, #6C63FF22, transparent),
+                radial-gradient(circle at bottom left, #FF658411, transparent);
+        }
+
+        .otp-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 24px;
+            padding: 3rem;
+            width: 100%;
+            max-width: 450px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .otp-icon {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            display: inline-block;
+            background: linear-gradient(135deg, #6C63FF, #FF6584);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .otp-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: #1a1a2e;
+            margin-bottom: 0.5rem;
+        }
+
+        .otp-subtitle {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 0.95rem;
+        }
+
+        .otp-input-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .otp-digit {
+            width: 50px;
+            height: 60px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            background: white;
+            transition: all 0.3s ease;
+        }
+
+        .otp-digit:focus {
+            border-color: #6C63FF;
+            box-shadow: 0 0 0 4px rgba(108, 99, 255, 0.15);
+            outline: none;
+            transform: translateY(-2px);
+        }
+
+        .verify-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #6C63FF, #5A52D5);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 15px -3px rgba(108, 99, 255, 0.3);
+        }
+
+        .verify-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(108, 99, 255, 0.4);
+        }
+
+        .resend-text {
+            margin-top: 2rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .resend-link {
+            color: #6C63FF;
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.3s ease;
+        }
+
+        .resend-link:hover {
+            color: #5A52D5;
+        }
+
+        .alert {
+            padding: 1rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fee2e2;
+        }
+
+        .alert-success {
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #dcfce7;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container">
+        <div class="otp-card">
+            <div class="otp-icon" style="background:none;">
+                <img th:src="@{/images/logo.png}" alt="Talentrock Logo"
+                    style="width:64px; height:64px; border-radius:16px; margin-bottom:1rem;">
+            </div>
+            <h1 class="otp-title">Email Verification</h1>
+            <p class="otp-subtitle">We've sent a 6-digit code to your email. Please enter it below to verify your
+                account.</p>
+
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+            <form th:action="@{/verify-otp}" method="POST" id="otpForm">
+                <input type="hidden" name="username" th:value="${username}">
+                <div class="otp-input-group">
+                    <input type="text" class="otp-digit" maxlength="1" required autofocus>
+                    <input type="text" class="otp-digit" maxlength="1" required>
+                    <input type="text" class="otp-digit" maxlength="1" required>
+                    <input type="text" class="otp-digit" maxlength="1" required>
+                    <input type="text" class="otp-digit" maxlength="1" required>
+                    <input type="text" class="otp-digit" maxlength="1" required>
+                </div>
+                <input type="hidden" name="otp" id="fullOtp">
+                <button type="submit" class="verify-btn">Verify Account</button>
+            </form>
+
+            <p class="resend-text">
+                Didn't receive the code?
+                <a href="#" class="resend-link">Resend Code</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        const inputs = document.querySelectorAll('.otp-digit');
+        const form = document.getElementById('otpForm');
+        const fullOtpInput = document.getElementById('fullOtp');
+
+        inputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length > 1) {
+                    e.target.value = e.target.value.slice(0, 1);
+                }
+                if (e.target.value && index < inputs.length - 1) {
+                    inputs[index + 1].focus();
+                }
+                updateFullOtp();
+            });
+
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    inputs[index - 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const pasteData = e.clipboardData.getData('text').slice(0, 6);
+                pasteData.split('').forEach((char, i) => {
+                    if (inputs[i]) inputs[i].value = char;
+                });
+                updateFullOtp();
+            });
+        });
+
+        function updateFullOtp() {
+            let otp = '';
+            inputs.forEach(input => otp += input.value);
+            fullOtpInput.value = otp;
+        }
+
+        form.addEventListener('submit', (e) => {
+            updateFullOtp();
+            if (fullOtpInput.value.length !== 6) {
+                e.preventDefault();
+                alert('Please enter all 6 digits');
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -65,7 +65,9 @@ public class HomeController {
     @PostMapping("/contact/send")
     public String sendContact(@RequestParam String name,
             @RequestParam String email,
+            @RequestParam(required = false) String phone,
             @RequestParam String message,
+            @RequestParam(required = false) Integer rating,
             org.springframework.security.core.Authentication auth,
             RedirectAttributes redirectAttrs) {
         try {
@@ -83,14 +85,18 @@ public class HomeController {
                 }
             }
 
-            ContactMessage savedMsg = notificationService.saveContactMessage(name.trim(), email.trim(), message.trim());
+            ContactMessage savedMsg = notificationService.saveContactMessage(name.trim(), email.trim(), 
+                    phone != null ? phone.trim() : null, message.trim(), rating);
             notificationService.notifyAdminsContactMessage(senderDetails, email.trim(), savedMsg.getId());
 
             redirectAttrs.addFlashAttribute("success",
                     "✅ Message sent! We'll get back to you at " + email + " soon.");
         } catch (Exception e) {
-            redirectAttrs.addFlashAttribute("error",
-                    "Something went wrong. Please try again.");
+            String errorMessage = "Something went wrong. Please try again.";
+            if (e.getMessage() != null && (e.getMessage().contains("Authentication failed") || e.getMessage().contains("Username and Password not accepted"))) {
+                errorMessage = "Message saved, but email notification failed: SMTP authentication failed. If using Gmail, please use an App Password.";
+            }
+            redirectAttrs.addFlashAttribute("error", errorMessage);
         }
         return "redirect:/contact";
     }

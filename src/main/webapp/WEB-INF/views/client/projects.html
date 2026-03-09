@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Projects | Talentrock</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+</head>
+
+<body>
+    <div class="app-layout">
+        <div th:replace="~{fragments/client-sidebar :: client-sidebar}"></div>
+
+        <main class="main-content">
+            <div class="page-header flex-between">
+                <div>
+                    <h1 class="page-title">My <span class="gradient-text">Projects</span></h1>
+                    <p class="page-subtitle">Manage and track your project progress</p>
+                </div>
+                <a href="/client/post-project" class="btn btn-primary">➕ Post New Project</a>
+            </div>
+
+            <!-- Filters -->
+            <div class="card mb-4" style="background: var(--bg-card);">
+                <div class="card-body flex gap-2 flex-wrap">
+                    <a href="/client/projects?status=ALL"
+                        th:class="${currentStatus == 'ALL' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'}">All
+                        Projects</a>
+                    <a href="/client/projects?status=OPEN"
+                        th:class="${currentStatus == 'OPEN' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'}">Open</a>
+                    <a href="/client/projects?status=IN_PROGRESS"
+                        th:class="${currentStatus == 'IN_PROGRESS' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'}">In
+                        Progress</a>
+                    <a href="/client/projects?status=COMPLETED"
+                        th:class="${currentStatus == 'COMPLETED' ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'}">Completed</a>
+                </div>
+            </div>
+
+            <!-- Project Cards -->
+            <div th:if="${projects == null or projects.isEmpty()}"
+                style="padding: 5rem 2rem; text-align: center; color: var(--text-muted); background: var(--bg-card); border-radius: var(--radius-lg);">
+                <div style="font-size: 4rem; margin-bottom: 1.5rem;">📂</div>
+                <h3>No projects found</h3>
+                <p>Try changing your filter or post a new project to get started.</p>
+                <a href="/client/post-project" class="btn btn-primary mt-3">Post Your First Project</a>
+            </div>
+
+            <div class="grid grid-3" th:if="${projects != null and !projects.isEmpty()}">
+                <div th:each="project : ${projects}" class="card project-item-card" style="cursor: pointer;"
+                    th:onclick="|location.href='/client/project/' + ${project.id}|">
+                    <div class="card-body">
+                        <div class="flex-between mb-2">
+                            <span class="text-xs font-bold uppercase tracking-wider" style="color: var(--primary);"
+                                th:text="${project.category}">Category</span>
+                            <span th:switch="${project.status.name()}">
+                                <span th:case="'OPEN'" class="project-badge badge-open">Open</span>
+                                <span th:case="'IN_PROGRESS'" class="project-badge badge-progress">Active</span>
+                                <span th:case="'COMPLETED'" class="project-badge badge-completed">Done</span>
+                                <span th:case="*" class="project-badge badge-pending"
+                                    th:text="${project.status}">Status</span>
+                            </span>
+                        </div>
+                        <h3 class="mb-2" style="font-size: 1.25rem;" th:text="${project.title}">Project Title</h3>
+                        <p class="text-muted text-sm line-clamp-2 mb-3" th:text="${project.description}">Short
+                            description...</p>
+
+                        <div class="divider mb-3"></div>
+
+                        <div class="flex-between">
+                            <div>
+                                <div class="text-xs text-muted mb-1">Budget Range</div>
+                                <div style="font-weight: 700; color: var(--secondary);">
+                                    ₹<span th:text="${#numbers.formatDecimal(project.budgetMin, 1, 0)}">0</span> -
+                                    ₹<span th:text="${#numbers.formatDecimal(project.budgetMax, 1, 0)}">0</span>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-xs text-muted mb-1">Bids</div>
+                                <div style="font-weight: 700;"
+                                    th:text="${project.bids != null ? project.bids.size() : 0}">0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <style>
+        .project-item-card {
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            border: 1px solid var(--bg-border);
+        }
+
+        .project-item-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</body>
+
+</html>

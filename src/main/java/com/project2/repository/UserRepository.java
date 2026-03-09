@@ -22,4 +22,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByRoleAndIsActive(Role role, Boolean isActive);
 
     List<User> findByRoleAndIsActiveAndCategoryContainingIgnoreCase(Role role, Boolean isActive, String category);
+
+    Optional<User> findByResetToken(String resetToken);
 }

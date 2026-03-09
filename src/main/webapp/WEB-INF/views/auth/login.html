@@ -34,7 +34,7 @@
             <div class="card-body">
                 <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
                 <div th:if="${message}" class="alert alert-success">✅ <span th:text="${message}"></span></div>
-                <div th:if="${param.logout}" class="alert alert-info">👋 You have been logged out successfully.</div>
+                <div th:if="${param.logout}" class="alert alert-info">You have been logged out successfully.</div>
 
                 <form th:action="@{/login}" method="post">
                     <div class="form-group">
@@ -62,16 +62,7 @@
             </div>
         </div>
 
-        <!-- Demo credentials hint -->
-        <div class="card mt-3" style="border-color: rgba(108,99,255,0.2);">
-            <div class="card-body" style="padding:1rem 1.25rem;">
-                <p class="text-muted text-xs font-bold mb-1" style="letter-spacing:0.06em; text-transform:uppercase;">📋
-                    Quick Access</p>
-                <p class="text-sm text-secondary-color">Register as <strong>Client</strong>,
-                    <strong>Freelancer</strong>, or <strong>Admin</strong> to explore the platform.
-                </p>
-            </div>
-        </div>
+
     </div>
 </body>
 

@@ -18,13 +18,17 @@
         <ul class="navbar-nav">
             <li><a href="/" class="nav-link">Home</a></li>
             <li><a href="/about" class="nav-link active">About</a></li>
+            <li><a href="/contact" class="nav-link">Contact Us</a></li>
             <li><a href="/login" class="btn btn-primary btn-sm" style="margin-left:8px">Get Started</a></li>
         </ul>
     </nav>
 
     <div style="min-height:100vh; padding:120px 2rem 4rem; max-width:900px; margin:0 auto;">
         <div class="text-center mb-4">
-            <span class="section-tag">🚀 About Us</span>
+            <span class="section-tag" style="display:inline-flex; align-items:center; gap:8px;">
+                <img th:src="@{/images/logo.png}" alt="Logo" style="width:18px; height:18px; border-radius:4px;">
+                About Us
+            </span>
             <h1 style="font-size:3.5rem; font-weight:900; margin:1rem 0;">The Future of <span
                     class="gradient-text">Transparent</span> Freelancing</h1>
             <p style="font-size:1.15rem; color:var(--text-secondary); line-height:1.8; max-width:700px; margin:0 auto;">
@@ -64,13 +68,23 @@
                     While platforms like Upwork charge 20%+, Talentrock charges only 5%. We believe freelancers should
                     keep more of what they earn. Our sustainable model relies on volume, not exploitation.
                 </p>
-                <a href="/register" class="btn btn-primary btn-lg">Join Talentrock Today 🚀</a>
+                <a href="/register" class="btn btn-primary btn-lg"
+                    style="display:inline-flex; align-items:center; gap:10px; justify-content:center;">
+                    Join Talentrock Today
+                    <img th:src="@{/images/logo.png}" alt="Logo" style="width:24px; height:24px; border-radius:6px;">
+                </a>
             </div>
         </div>
     </div>
 
     <footer class="footer">
-        <div class="footer-bottom">© 2025 Talentrock. Built for merit. Built for trust.</div>
+        <div class="footer-bottom">
+            <div style="display:flex; align-items:center; justify-content:center; gap:8px; margin-bottom:10px;">
+                <img th:src="@{/images/logo.png}" alt="Logo" style="width:20px; height:20px; border-radius:4px;">
+                <strong>Talentrock</strong>
+            </div>
+            © 2025 Talentrock. Built for merit. Built for trust.
+        </div>
     </footer>
 </body>
 

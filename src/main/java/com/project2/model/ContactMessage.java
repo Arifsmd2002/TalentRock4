@@ -20,6 +20,10 @@ public class ContactMessage {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String message;
 
+    private String phone;
+    
+    private Integer rating;
+
     private Boolean isRead = false;
 
     @Column(updatable = false)
@@ -61,6 +65,22 @@ public class ContactMessage {
 
     public void setMessage(String message) {
         this.message = message;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public Integer getRating() {
+        return rating;
+    }
+
+    public void setRating(Integer rating) {
+        this.rating = rating;
     }
 
     public Boolean getIsRead() {

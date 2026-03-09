@@ -11,8 +11,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet" />
-    <link rel="icon"
-        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>" />
+    <link rel="icon" th:href="@{/images/logo.png}" type="image/png" />
     <style>
         /* ============================================================
            PRICING PAGE — TALENTROCK PREMIUM THEME
@@ -999,13 +998,14 @@
     <!-- NAVBAR -->
     <nav class="pricing-nav">
         <a href="/" class="nav-brand">
-            ⚡ TALENT<span>ROCK</span>
+            <img th:src="@{/images/logo.png}" alt="Logo" style="width:32px; height:32px; border-radius:8px;">
+            TALENT<span>ROCK</span>
         </a>
         <ul class="nav-links">
             <li><a href="/">Home</a></li>
             <li><a href="/about">About</a></li>
             <li><a href="/pricing" class="active">Pricing</a></li>
-            <li><a href="/contact">Contact</a></li>
+            <li><a href="/contact">Contact Us</a></li>
         </ul>
         <div class="nav-cta">
             <a href="/login" class="btn-nav-ghost" sec:authorize="isAnonymous()">Login</a>
@@ -1089,7 +1089,7 @@
             <!-- ====== GROWTH PLAN ====== -->
             <div class="plan-card plan-growth">
                 <div class="plan-icon-wrap">
-                    <span class="plan-icon">🚀</span>
+                    <img th:src="@{/images/logo.png}" alt="Growth" class="plan-icon" style="width:28px; height:28px;">
                 </div>
                 <div class="plan-name">Growth</div>
                 <span class="plan-badge">Most Popular Start</span>
@@ -1142,7 +1142,7 @@
             <div class="plan-card plan-pro">
                 <div class="best-value-ring">⭐ Best Value</div>
                 <div class="plan-icon-wrap">
-                    <span class="plan-icon">⚡</span>
+                    <img th:src="@{/images/logo.png}" alt="Pro" class="plan-icon" style="width:28px; height:28px;">
                 </div>
                 <div class="plan-name">Pro</div>
                 <span class="plan-badge">Recommended</span>
@@ -1434,7 +1434,11 @@
             <p>Join thousands of freelancers who trust Talentrock for transparent, merit-based income. Start free —
                 upgrade when you're ready to scale.</p>
             <div class="cta-buttons">
-                <a href="/register" class="cta-btn-primary">🚀 Start Free Today</a>
+                <a href="/register" class="cta-btn-primary"
+                    style="display:inline-flex; align-items:center; gap:8px; justify-content:center;">
+                    Start Free Today
+                    <img th:src="@{/images/logo.png}" alt="Logo" style="width:20px; height:20px; border-radius:4px;">
+                </a>
                 <a href="/contact" class="cta-btn-outline">Talk to Us →</a>
             </div>
         </div>
@@ -1523,7 +1527,10 @@
             <div id="step1" class="modal-step">
                 <div style="padding:2rem 2rem 0;">
                     <div style="text-align:center;margin-bottom:1.5rem;">
-                        <div id="m-plan-icon" style="font-size:2.5rem;margin-bottom:0.75rem;">⚡</div>
+                        <div id="m-plan-icon" style="margin-bottom:0.75rem;">
+                            <img th:src="@{/images/logo.png}" alt="Plan Icon"
+                                style="width:48px; height:48px; border-radius:10px;">
+                        </div>
                         <h2
                             style="font-size:1.4rem;font-weight:900;color:#fff;letter-spacing:-0.03em;margin-bottom:0.3rem;">
                             Confirm Your Subscription</h2>
@@ -2005,7 +2012,7 @@
         let timerInterval = null;
         let autoRenewOn = true;
 
-        const icons = { GROWTH: '🚀', PRO: '⚡', ELITE: '👑' };
+        const icons = { GROWTH: 'Logo', PRO: 'Logo', ELITE: '👑' };
         const colors = {
             GROWTH: { badge: 'rgba(6,182,212,0.15)', text: '#22d3ee', border: 'rgba(6,182,212,0.3)', btn: 'linear-gradient(135deg,#06b6d4,#0891b2)' },
             PRO: { badge: 'rgba(99,102,241,0.15)', text: '#818cf8', border: 'rgba(99,102,241,0.3)', btn: 'linear-gradient(135deg,#6366f1,#8b5cf6)' },
@@ -2020,7 +2027,7 @@
             modalComm = comm;
 
             // Populate step 1
-            document.getElementById('m-plan-icon').textContent = icons[plan] || '⚡';
+            // document.getElementById('m-plan-icon').textContent = icons[plan] || '⚡';
             document.getElementById('m-plan-name').textContent = name + ' Plan';
             document.getElementById('m-bids').textContent = bids;
             document.getElementById('m-comm').textContent = comm;

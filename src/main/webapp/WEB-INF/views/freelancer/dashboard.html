@@ -17,7 +17,7 @@
             <div class="page-header flex-between">
                 <div>
                     <h1 class="page-title">Hi, <span class="gradient-text"
-                            th:text="${user.fullName != null ? user.fullName : user.username}">Freelancer</span> 👋
+                            th:text="${user.fullName != null ? user.fullName : user.username}">Freelancer</span>
                         <span th:if="${activeSubscription != null}" class="project-badge badge-progress"
                             style="font-size: 0.75rem; vertical-align: middle; margin-left: 8px;"
                             th:text="${activeSubscription.plan.displayName + ' Plan'}">Growth Plan</span>
@@ -33,7 +33,7 @@
             <div th:if="${error}" class="alert alert-error">⚠️ <span th:text="${error}"></span></div>
 
             <!-- Stats -->
-            <div class="grid grid-5 mb-4">
+            <div class="grid grid-6 mb-4">
                 <a href="/freelancer/bids" class="stat-card"
                     style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon purple">📩</div>
@@ -42,13 +42,32 @@
                         <div class="stat-label">Total Bids</div>
                     </div>
                 </a>
-                <a href="/freelancer/bids" class="stat-card"
+                <a href="/freelancer/projects?status=ALL" class="stat-card"
                     style="text-decoration: none; color: inherit; cursor: pointer;">
                     <div class="stat-icon purple"
-                        style="background: rgba(139, 133, 255, 0.15); color: var(--primary-light);">🎯</div>
+                        style="background: rgba(139, 133, 255, 0.15); color: var(--primary-light);">📂</div>
                     <div>
-                        <div class="stat-value" th:text="${remainingBids == 2147483647 ? '∞' : remainingBids}">0</div>
-                        <div class="stat-label">Bids Left</div>
+                        <div class="stat-value" th:text="${totalProjects}">0</div>
+                        <div class="stat-label">Total Projects</div>
+
+                    </div>
+                </a>
+                <a href="/freelancer/projects?status=IN_PROGRESS" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <div class="stat-icon teal">⚙️</div>
+                    <div>
+                        <div class="stat-value" th:text="${inProgressCount}">0</div>
+                        <div class="stat-label">In Progress</div>
+
+                    </div>
+                </a>
+                <a href="/freelancer/projects?status=COMPLETED" class="stat-card"
+                    style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <div class="stat-icon green">✅</div>
+                    <div>
+                        <div class="stat-value" th:text="${completedCount}">0</div>
+                        <div class="stat-label">Completed</div>
+
                     </div>
                 </a>
                 <a href="/freelancer/bids?status=PENDING" class="stat-card"
@@ -57,14 +76,6 @@
                     <div>
                         <div class="stat-value" th:text="${pendingBids}">0</div>
                         <div class="stat-label">Pending Bids</div>
-                    </div>
-                </a>
-                <a href="/freelancer/bids?status=ACCEPTED" class="stat-card"
-                    style="text-decoration: none; color: inherit; cursor: pointer;">
-                    <div class="stat-icon green">✅</div>
-                    <div>
-                        <div class="stat-value" th:text="${acceptedBids}">0</div>
-                        <div class="stat-label">Accepted Bids</div>
                     </div>
                 </a>
                 <a href="/freelancer/wallet" class="stat-card"
@@ -122,7 +133,10 @@
                     <div class="card-body">
                         <div th:if="${activeProjects == null or activeProjects.isEmpty()}"
                             style="text-align:center; padding:1.5rem; color:var(--text-muted);">
-                            <div style="font-size:2rem; margin-bottom:0.5rem;">🚀</div>
+                            <div style="margin-bottom:0.75rem;">
+                                <img th:src="@{/images/logo.png}" alt="Logo"
+                                    style="width:48px; height:48px; border-radius:12px;">
+                            </div>
                             <p class="text-sm">No active projects. Start bidding!</p>
                             <a href="/freelancer/browse" class="btn btn-primary btn-sm mt-2">Find Projects</a>
                         </div>
